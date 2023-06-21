@@ -12,31 +12,7 @@ body {
 .nav-link{
   background-color: hotpink;
 }
-.active{
-  background-color: hotpink;
-}
-/* Style the active/current link*/
-.header a.active {
-  background-color:#6a197d;
-  color: white;
-}
 
-/* Float the link section to the right */
-.header-right {
-  float: right;
-}
-.about {
-  text-align: center;
-  font-size: 25px;
-}
-.container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  align-content: center;
-  flex-wrap: wrap;
-
-}
 
 p {font-size: 16px;}
 .margin {margin-bottom: 15px;}
@@ -68,60 +44,3 @@ btn {
  }
 
 
-/* <- Design of Buttons for Landing Page */
-
-.btn:hover {
-  background-position: right center; /* change the direction of the change here */
-}
-
-.btn-1 {
-  background-image: linear-gradient(to right, #f6d365 0%, #fda085 51%, #f6d365 100%);
-}
-
-.btn-2 {
-  background-image: linear-gradient(to right, #fbc2eb 0%, #a6c1ee 51%, #fbc2eb 100%);
-
-}
-
-.btn-3 {
-  background-image: linear-gradient(to right, #84fab0 0%, #8fd3f4 51%, #84fab0 100%);
-
-}
-
-.btn-4 {
-  background-color: hotpink;
-
-}
-
-.btn-5 {
-  background-image: linear-gradient(to right, #ffecd2 0%, #fcb69f 51%, #ffecd2 100%);
-
-}
-.btn-6 {
-  background-image: linear-gradient(to right, #FF9FB2 0%, #FBDCE2 51%, #F6B6C3 100%);
-
-}
-.btn-7 {
-  background-image: linear-gradient(to right, #D8E1FF 0%, #69DDFF 51%, #D8E1FF 100%);
-
-}
-.btn-8 {
-  background-image: linear-gradient(to right, #C65F58 0%, #FAC358 51%, #C65F58 100%);
-
-}
-.btn-9 {
-  background-image: linear-gradient(to right, #E6F4BE 0%, #B4CF68 51%, #E6F4BE 100%);
-
-}
-.btn-10 {
-  background-image: linear-gradient(to right, #D8E1FF 0%, #69DDFF 51%, #B2F7EF 100%);
-
-}
-.btn-11 {
- background-image: linear-gradient(to right, #fbc2eb 0%, #a6c1ee 51%, #fbc2eb 100%);
-
-}
-.btn-12 {
-  background-image: linear-gradient(to right, #FF9FB2 0%, #FBDCE2 51%, #F6B6C3 100%);
-
-}
