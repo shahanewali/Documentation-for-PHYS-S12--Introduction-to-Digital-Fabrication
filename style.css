@@ -1,9 +1,11 @@
+
 body {
-    font: 20px Montserrat, sans-serif;
+  font-family: Trebuchet MS,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Tahoma,sans-serif; 
+    font-size: 20px;
     line-height: 1.8;
-    color: black;
-    padding-top: 0px !important;
+    color: black
   }
+
 
   h3 {
   background-color: hotpink;
