@@ -15,9 +15,27 @@ body {
 .active{
   background-color: hotpink;
 }
+/* Style the active/current link*/
 .header a.active {
   background-color:#6a197d;
   color: white;
+}
+
+/* Float the link section to the right */
+.header-right {
+  float: right;
+}
+.about {
+  text-align: center;
+  font-size: 25px;
+}
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  flex-wrap: wrap;
+
 }
 
 p {font-size: 16px;}
