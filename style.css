@@ -13,12 +13,12 @@ p {font-size: 16px;}
 .margin {margin-bottom: 15px;}
 
 .container-fluid {
-  background-color: pink;
   padding: 0px;
   /*padding-bottom: 70px;*/
 }
 
 .nav-title{
+  background-color: pink;
   margin-left: 15px;
   margin-right: 15px;
 }
