@@ -12,6 +12,9 @@ body {
 .nav-link{
   background-color: hotpink;
 }
+.active{
+  background-color: hotpink;
+}
 
 p {font-size: 16px;}
 .margin {margin-bottom: 15px;}
