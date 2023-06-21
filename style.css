@@ -15,6 +15,10 @@ body {
 .active{
   background-color: hotpink;
 }
+.header a.active {
+  background-color:#6a197d;
+  color: white;
+}
 
 p {font-size: 16px;}
 .margin {margin-bottom: 15px;}
