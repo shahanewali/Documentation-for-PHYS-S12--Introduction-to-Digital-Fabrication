@@ -12,9 +12,6 @@ body {
 
 p {font-size: 16px;}
 .margin {margin-bottom: 15px;}
-li {
-  font-size: 16px; /* Remplacez la valeur par celle souhaitée */
-}
 
 
 .container-fluid {
@@ -44,3 +41,6 @@ btn {
  }
 
 
+li {
+  font-size: 16px; /* Remplacez la valeur par celle souhaitée */
+}
