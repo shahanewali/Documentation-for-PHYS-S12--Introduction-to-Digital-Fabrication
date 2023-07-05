@@ -1,11 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <style>
+    body {
+      background-color: #f1f1f1;
+      font-family: "Courier New", Courier, monospace;
+      padding: 20px;
+    }
 
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/arduino-light.min.css">
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/arduino.min.js"></script>
-<script>hljs.initHighlightingOnLoad();</script> 
+    pre {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      padding: 10px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      line-height: 1.5;
+      font-size: 14px;
+      color: #333;
+      overflow: auto;
+    }
+  </style>
 </head>
 
 <title>PHYS S-12: Intro to Digital Fabrication </title>
@@ -60,7 +74,7 @@ Bring your circuit to class Tuesday and be ready to do a brief live demo. </i>
 <p>Then I programmed the button as a switch and I coded on Arduino so that I could use the potentiometer to control my motor speed.</p>
 <p>Here is the code.</p>
 <pre>
-  <code>
+  <code class="language-arduino">
     // Broche de l'interrupteur
     const int interrupteurPin = 2;
 
