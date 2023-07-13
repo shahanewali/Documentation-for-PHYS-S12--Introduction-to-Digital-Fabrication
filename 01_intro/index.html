@@ -1,6 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
+  <style>
+    body {
+      background-color: #f1f1f1;
+      font-family: "Courier New", Courier, monospace;
+      padding: 20px;
+    }
 
+    pre {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      padding: 10px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      line-height: 1.5;
+      font-size: 14px;
+      color: #333;
+      overflow: auto;
+    }
+  </style>
+</head>
 <title>PHYS S-12: Intro to Digital Fabrication </title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="../style.css" rel="stylesheet">
@@ -101,7 +121,46 @@ Here are the measures I used that finally worked.</p>
 I think this is a good idea and that this will work better than the DIY IR sensors.I started with one sensor and I coded on Arduino so that I would print "coin detected" if it "felt" something. It worked well even for the smallest coins.</p>
 <p>Then, I added another piezo disc to my circuit and connected it to another pin on the Arduino board. I changed my code so that it would print "coin detected 1" when a coin fell on it and "coin detected 2" when a coin fell on the other one.Again, it worked really well. I even tried to simulate the fall from the sorting ramp.</p>
 <p>Here is the circuit and the codes I used.</p>
-<img src="finalsortingcoins3Dprint.jpg" alt="Image" style="width:300px;height:600px;"/>
+<img src="circuitwith2piezosv1.jpg" alt="Image" style="width:400px;height:600px;"/>
+<pre>
+  <code class="language-arduino">
+const int piezoPin = 2; // Broche numérique du disque piézoélectrique
+void setup() {
+  Serial.begin(9600); // Initialise la communication série à 9600 bauds
+
+  pinMode(piezoPin, INPUT); // Configure la broche du disque piézoélectrique en mode entrée
+}
+
+void loop() {
+  int valeurPiezo = digitalRead(piezoPin); // Lit l'état du disque piézoélectrique
+
+  if (valeurPiezo == HIGH) {
+    Serial.println("Pièce détectée");
+    delay(500); // Attend 500 millisecondes pour éviter les rebonds
+  }
+}
+    </code>
+  </pre>
+  <pre>
+  <code class="language-arduino">
+const int piezoPin = 2; // Broche numérique du disque piézoélectrique
+void setup() {
+  Serial.begin(9600); // Initialise la communication série à 9600 bauds
+
+  pinMode(piezoPin, INPUT); // Configure la broche du disque piézoélectrique en mode entrée
+}
+
+void loop() {
+  int valeurPiezo = digitalRead(piezoPin); // Lit l'état du disque piézoélectrique
+
+  if (valeurPiezo == HIGH) {
+    Serial.println("Pièce détectée");
+    delay(500); // Attend 500 millisecondes pour éviter les rebonds
+  }
+}
+    </code>
+  </pre>
+
 <p>At the same time, I thought about the structure of my piggy bank. First of all, I'm going to need some ramps to make it easier for the coins to fall. The ramp will be less inclined at the beginning, and that's where the sensors will be placed. I've modeled this on Fusion 360. Now I have several solutions. Either I print 6 ramps directly with 3D printing, which allows me to make 6 holes in the ramps and make them hollow so I can pass the disc wires through the holes and hide all the wires under the ramps. The problem with this solution is that it's going to take a long time to print. It also means that the ramps have to be bigger, so that there's enough room underneath. Alternatively, I use the laser cutter on cardboard or wood and glue several pieces together to create ramps. In this case, I won't make any holes, but instead I'll have 1 second box glued to the back of my piggy bank (in which I'll have made holes) where I'll put all the wires. </p>
 <p>Here's the modeling I've done so far, and also a prototype I made using the laser cutter. I don't think there'll be enough room underneath for a whole circuit.</p>
 <img src="toboggansketchv1.png" alt="Image" style="width:500px;height:400px;"/>
