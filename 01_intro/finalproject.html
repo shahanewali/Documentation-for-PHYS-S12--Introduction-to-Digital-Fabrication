@@ -130,6 +130,7 @@ I think this is a good idea and that this will work better than the DIY IR senso
   <li>Wires</li>
   <li>1 MegaOhm Resistors</li>
 </ul>
+<p></p>
 <img src="schemacircuitpiezo1.png" alt="Image" style="width:400px;height:250px;"/>
 <img src="circuitwith2piezosv1.jpg" alt="Image" style="width:400px;height:600px;"/>
 <pre>
@@ -469,6 +470,189 @@ void printAmount(int amount)
       <source src="videocodeparfaitsansdisplayfinalproject.mp4" type=video/mp4>
     </video>
   <p>I'm very happy with this code, now the next step is to succeed in using an output. I'll probably use an LCD screen.</p>
+
+<h2>JULY 13 part 2: LED discovery</h2>
+<p>Yesterday, in class, we learnt about output devices. During the lab, I tried to use OLED screens and then moved on to LCD screens (see Week 7). I wanted my piggy bank totals to be displayed on this screen.</p>
+<p>I began by using the LCD on its own. Here's the wiring I followed:</p>
+<img src="LCDmontageessai1.png" alt="Image" style="width:500px;height:450px;"/>
+<p>I then tried to print things on the LED screen. In particular, I tried printing 1c, 5c, 10c, 25c, $1 and a sigma on the first line, and zeros underneath on the second line. I wanted to see if everything I wanted to display would fit. The answer was no. A 16x2 LCD screen is too small.</p>
+ <pre>
+  <code class="language-arduino">
+#include <LiquidCrystal.h>
+
+// initialize the library with the numbers of the interface pins
+
+LiquidCrystal LCD(12, 11, 5, 4, 3, 2); /// REGISTER SELECT PIN,ENABLE PIN,D4 PIN,D5 PIN, D6 PIN, D7 PIN
+
+
+void setup() {
+   LCD.begin(16, 2); 
+
+   LCD.setCursor(1, 0);
+   LCD.print("HELLO");
+  
+   LCD.setCursor(8, 1);
+   LCD.print("WORLD");
+}
+ 
+void loop() {
+
+}
+    </code>
+  </pre>
+<img src="helloworldlcd.jpg" alt="Image" style="width:300px;height:100px;"/>
+ <pre>
+  <code class="language-arduino">
+#include <LiquidCrystal.h>
+
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+
+void setup()
+{
+  lcd.begin(16, 2);
+}
+
+void loop()
+{
+  lcd.setCursor(0, 0); // Set the cursor to the top-left position
+
+  // Display labels on the first line with appropriate spacing
+  lcd.print("1c 5c 10c 25c 1$ Sigma");
+  lcd.setCursor(1, 1); // Set the cursor to the bottom-left position
+
+  // Display a zero aligned below each label, except for the numbers
+  lcd.print("0  0   0   0  0   0");
+
+  delay(1000); // 1-second delay
+
+  lcd.clear(); // Clear the LCD screen
+}
+
+    </code>
+  </pre>
+<img src="LCDtroppetit.jpg" alt="Image" style="width:300px;height:100px;"/>
+<p>Finally, I decided that for the time being I would only print the total amount.</p>
+
+<h2> JULY 14 </h2>
+<p>After experimenting with the LCD screen yesterday, I wanted to try and get it to return the result of the Piezo discs counting code I made yesterday. I can only get it to return the global total at the moment, as there isn't enough space on the LCD screen otherwise.</p>
+ <pre>
+  <code class="language-arduino">
+#include <LiquidCrystal.h>
+
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2); // LCD screen
+
+const int sensor1Pin = A4; // Sensor 1, connected to A4 pin
+const int sensor2Pin = A2; // Sensor 2, connected to A2 pin
+const int sensor3Pin = A0; // Sensor 3, connected to A0 pin
+const int sensor4Pin = A3; // Sensor 4, connected to A3 pin
+const int sensor5Pin = A5; // Sensor 5, connected to A5 pin
+
+int total1 = 0;       // Total for sensor 1 (10 cents)
+int total2 = 0;       // Total for sensor 2 (1 cent)
+int total3 = 0;       // Total for sensor 3 (5 cents)
+int total4 = 0;       // Total for sensor 4 (25 cents)
+int total5 = 0;       // Total for sensor 5 (1 dollar)
+int totalGlobal = 0;  // Overall total
+
+void setup() {
+  lcd.begin(16, 2); // Initialize the LCD screen with 16 columns and 2 rows
+  Serial.begin(9600); // Initialize serial communication at 9600 baud
+
+  pinMode(sensor1Pin, INPUT); // Set sensor1Pin as input
+  pinMode(sensor2Pin, INPUT); // Set sensor2Pin as input
+  pinMode(sensor3Pin, INPUT); // Set sensor3Pin as input
+  pinMode(sensor4Pin, INPUT); // Set sensor4Pin as input
+  pinMode(sensor5Pin, INPUT); // Set sensor5Pin as input
+}
+
+void loop() {
+  if (digitalRead(sensor1Pin) == HIGH) {
+    total1 += 10;
+    totalGlobal += 10;
+    printTotal("Total 1", total1);
+    printOverallTotal(totalGlobal);
+    updateLCD();
+    delay(500); // Wait for 500 milliseconds to avoid switch bounce
+  }
+
+  if (digitalRead(sensor2Pin) == HIGH) {
+    total2 += 1;
+    totalGlobal += 1;
+    printTotal("Total 2", total2);
+    printOverallTotal(totalGlobal);
+    updateLCD();
+    delay(500); // Wait for 500 milliseconds to avoid switch bounce
+  }
+
+  if (digitalRead(sensor3Pin) == HIGH) {
+    total3 += 5;
+    totalGlobal += 5;
+    printTotal("Total 3", total3);
+    printOverallTotal(totalGlobal);
+    updateLCD();
+    delay(500); // Wait for 500 milliseconds to avoid switch bounce
+  }
+
+  if (digitalRead(sensor4Pin) == HIGH) {
+    total4 += 25;
+    totalGlobal += 25;
+    printTotal("Total 4", total4);
+    printOverallTotal(totalGlobal);
+    updateLCD();
+    delay(500); // Wait for 500 milliseconds to avoid switch bounce
+  }
+
+  if (digitalRead(sensor5Pin) == HIGH) {
+    total5 += 100;
+    totalGlobal += 100;
+    printTotal("Total 5", total5);
+    printOverallTotal(totalGlobal);
+    updateLCD();
+    delay(500); // Wait for 500 milliseconds to avoid switch bounce
+  }
+}
+
+void updateLCD() {
+  lcd.clear(); // Clear the LCD screen
+  lcd.setCursor(5, 0); // Set the cursor position to column 5, row 0
+  lcd.print("Total:");
+
+  lcd.setCursor(4, 1); // Set the cursor position to column 4, row 1
+  lcd.print("$");
+  lcd.print(totalGlobal / 100); // Print the dollars portion of the total
+  lcd.print(".");
+  if ((totalGlobal % 100) < 10) {
+    lcd.print("0");
+  }
+  lcd.print(totalGlobal % 100); // Print the cents portion of the total
+}
+
+void printTotal(const char* label, int total) {
+  Serial.print(label);
+  Serial.print(": ");
+  Serial.print(total);
+  Serial.print(" cents (");
+  Serial.print(total);
+  Serial.print(" coins)");
+  Serial.println();
+}
+
+void printOverallTotal(int total) {
+  Serial.print("Overall Total: $");
+  Serial.print(total / 100); // Print the dollars portion of the total
+  Serial.print(".");
+  if ((total % 100) < 10) {
+    Serial.print("0");
+  }
+  Serial.print(total % 100); // Print the cents portion of the total
+  Serial.println();
+}
+
+    </code>
+  </pre>
+<video width="600" height="400" controls autoplay>
+      <source src="codeparfait1enaction.mp4" type=video/mp4>
+    </video>
 
 <script src="../strapdown.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" ></script>
