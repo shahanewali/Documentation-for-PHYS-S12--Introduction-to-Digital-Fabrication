@@ -1,6 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
+  <style>
+    body {
+      background-color: #f1f1f1;
+      font-family: "Courier New", Courier, monospace;
+      padding: 20px;
+    }
 
+    pre {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      padding: 10px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      line-height: 1.5;
+      font-size: 14px;
+      color: #333;
+      overflow: auto;
+    }
+  </style>
+</head>
 <title>PHYS S-12: Intro to Digital Fabrication </title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="../style.css" rel="stylesheet">
@@ -46,7 +66,56 @@ For this I used:</p>
 </ul>
 <img src="circuitcapacitivesensorliquidsensor.jpg" alt="Image" style="width:400px;height:500px;"/>
 <p> This is the code I used.</p>
+<pre>
+  <code class="language-arduino">
+const int conductor1Pin = A0;
+const int conductor2Pin = A2;
+const int N_samples = 100;    // Number of samples to take. A higher number slows down the program but reduces the variation.
 
+unsigned long previousTime;  // Previous time for delay measurement
+unsigned long startTime;      // Start time of the program execution
+
+void setup() {
+  pinMode(conductor1Pin, OUTPUT);      // Pin for conductor 1
+  Serial.begin(115200);
+
+  previousTime = millis();  // Initialize previous time
+  startTime = millis();      // Record the start time
+}
+
+void loop() {
+  long int sum = 0;
+  unsigned long currentTime = millis();  // Current time
+
+  if (currentTime - previousTime >= 500) {
+    previousTime = currentTime;  // Update previous time
+    
+    for (int i = 0; i < N_samples; i++) {
+      digitalWrite(conductor1Pin, HIGH);              // Apply a high voltage to conductor 1.
+      delayMicroseconds(100);            // Delay to reach a steady state.
+      int highReading = analogRead(conductor2Pin);  // Measure the response of conductor 2 with high voltage.
+      
+      digitalWrite(conductor1Pin, LOW);               // Set the voltage to zero on conductor 1.
+      delayMicroseconds(100);            // Delay to reach a steady state.
+      int lowReading = analogRead(conductor2Pin);   // Measure the response of conductor 2 with low voltage.
+      
+      int difference = highReading - lowReading;       // The desired response is the difference between the two readings.
+      sum += difference;                               // Sum up the measurements.
+    }
+    
+    Serial.println(sum);
+  }
+
+  // Check if 45 seconds have passed since the start
+  if (currentTime - startTime >= 45000) {
+    Serial.println("End of the program");
+    while (true) {
+      // Infinite loop to stop the program
+    }
+  }
+}
+    </code>
+  </pre>
 <p>I programmed the display of measured values every half-second for 45 seconds. I did this because it's impossible to zoom out on the serial plotter or copy and paste all the values from the serial monitor at once. I know the possibility exists but I couldn't do it. In any case, I didn't spend enough time on it. I then exported the values displayed in the serial monitor to excel where I built a graph.</p>
 <p>I started with an empty glass of water. I then filled it halfway and then completely. On the graph, you can clearly see the different levels.</p>
 
