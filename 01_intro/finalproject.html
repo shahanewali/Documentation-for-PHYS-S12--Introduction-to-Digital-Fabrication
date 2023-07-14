@@ -309,7 +309,158 @@ void loop() {
   <li>Total 3= 15 cents</li>
   <li>Total= 1 dollar and 5 cents</li>
 </ul>
+<p>I've also added the number of x centime coins inserted next to the local total.</p>
+<p> Here is the code.</p>
+<pre>
+  <code class="language-arduino">
+const int sensor1Pin = A4; // Sensor 1, A4 pin
+const int sensor2Pin = A2; // Sensor 2, A2 pin
+const int sensor3Pin = A0; // Sensor 3, A0 pin
+const int sensor4Pin = A3; // Sensor 4, A3 pin
+const int sensor5Pin = A5; // Sensor 5, A5 pin
 
+int total1 = 0; // Total for Sensor 1 (10 cents)
+int total2 = 0; // Total for Sensor 2 (1 cent)
+int total3 = 0; // Total for Sensor 3 (5 cents)
+int total4 = 0; // Total for Sensor 4 (25 cents)
+int total5 = 0; // Total for Sensor 5 (1 dollar)
+int totalGlobal = 0; // Overall total
+
+void setup()
+{
+  Serial.begin(9600); // Initialize serial communication at 9600 baud
+
+  pinMode(sensor1Pin, INPUT);
+  pinMode(sensor2Pin, INPUT);
+  pinMode(sensor3Pin, INPUT);
+  pinMode(sensor4Pin, INPUT);
+  pinMode(sensor5Pin, INPUT);
+}
+
+void loop()
+{
+  if (digitalRead(sensor1Pin) == HIGH)
+  {
+    total1 += 10;
+    totalGlobal += 10;
+    Serial.print("Total 1: ");
+    printAmount(total1);
+    Serial.print(" (");
+    Serial.print(total1 / 10);
+    Serial.print(" coins)");
+    Serial.println();
+    Serial.print("Global total: ");
+    printAmount(totalGlobal);
+    Serial.println();
+    delay(500); // Wait for 500 milliseconds to debounce
+  }
+
+  if (digitalRead(sensor2Pin) == HIGH)
+  {
+    total2 += 1;
+    totalGlobal += 1;
+    Serial.print("Total 2: ");
+    Serial.print(total2);
+    Serial.print(" cents (");
+    Serial.print(total2);
+    Serial.print(" coins)");
+    Serial.println();
+    Serial.print("Global total: ");
+    printAmount(totalGlobal);
+    Serial.println();
+    delay(500); // Wait for 500 milliseconds to debounce
+  }
+
+  if (digitalRead(sensor3Pin) == HIGH)
+  {
+    total3 += 5;
+    totalGlobal += 5;
+    Serial.print("Total 3: ");
+    Serial.print(total3);
+    Serial.print(" cents (");
+    Serial.print(total3 / 5);
+    Serial.print(" coins)");
+    Serial.println();
+    Serial.print("Global total: ");
+    printAmount(totalGlobal);
+    Serial.println();
+    delay(500); // Wait for 500 milliseconds to debounce
+  }
+
+  if (digitalRead(sensor4Pin) == HIGH)
+  {
+    total4 += 25;
+    totalGlobal += 25;
+    Serial.print("Total 4: ");
+    printAmount(total4);
+    Serial.print(" (");
+    Serial.print(total4 / 25);
+    Serial.print(" coins)");
+    Serial.println();
+    Serial.print("Global total: ");
+    printAmount(totalGlobal);
+    Serial.println();
+    delay(500); // Wait for 500 milliseconds to debounce
+  }
+
+  if (digitalRead(sensor5Pin) == HIGH)
+  {
+    total5 += 100;
+    totalGlobal += 100;
+    Serial.print("Total 5: ");
+    printAmount(total5);
+    Serial.print(" (");
+    Serial.print(total5 / 100);
+    Serial.print(" coins)");
+    Serial.println();
+    Serial.print("Global total: ");
+    printAmount(totalGlobal);
+    Serial.println();
+    delay(500); // Wait for 500 milliseconds to debounce
+  }
+}
+
+void printAmount(int amount)
+{
+  if (amount >= 100)
+  {
+    int dollars = amount / 100;
+    int cents = amount % 100;
+    if (dollars > 0)
+    {
+      Serial.print(dollars);
+      Serial.print(" dollar");
+      if (dollars > 1)
+      {
+        Serial.print("s");
+      }
+      if (cents > 0)
+      {
+        Serial.print(" and ");
+      }
+    }
+    if (cents > 0)
+    {
+      Serial.print(cents);
+      Serial.print(" cent");
+      if (cents > 1)
+      {
+        Serial.print("s");
+      }
+    }
+  }
+  else
+  {
+    Serial.print(amount);
+    Serial.print(" cent");
+    if (amount != 1)
+    {
+      Serial.print("s");
+    }
+  }
+}
+    </code>
+  </pre>
 <script src="../strapdown.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" ></script>
 
