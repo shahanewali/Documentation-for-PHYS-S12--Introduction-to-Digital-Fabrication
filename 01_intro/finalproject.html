@@ -143,7 +143,36 @@ void loop() {
 
     </code>
   </pre>
-<h2>AJOUTER MES CODES</h2>
+  <pre>
+  <code class="language-arduino">
+const int sensor1Pin = 3; // Digital pin of sensor 1
+const int sensor2Pin = 4; // Digital pin of sensor 2
+
+void setup() {
+  Serial.begin(9600); // Initialize serial communication at 9600 baud
+
+  pinMode(sensor1Pin, INPUT); // Configure sensor 1 pin as input
+  pinMode(sensor2Pin, INPUT); // Configure sensor 2 pin as input
+}
+
+void loop() {
+  int sensor1Value = digitalRead(sensor1Pin); // Read the state of sensor 1
+  int sensor2Value = digitalRead(sensor2Pin); // Read the state of sensor 2
+
+  if (sensor1Value == HIGH) {
+    Serial.println("Coin detected 1");
+    delay(500); // Wait for 500 milliseconds to avoid bouncing
+  }
+
+  if (sensor2Value == HIGH) {
+    Serial.println("Coin detected 2");
+    delay(500); // Wait for 500 milliseconds to avoid bouncing
+  }
+}
+
+    </code>
+  </pre>
+
 <p>At the same time, I thought about the structure of my piggy bank. First of all, I'm going to need some ramps to make it easier for the coins to fall. The ramp will be less inclined at the beginning, and that's where the sensors will be placed. I've modeled this on Fusion 360. Now, I have several solutions. Either I print 6 ramps directly with 3D printing, which allows me to make 6 holes in the ramps and make them hollow so I can pass the disc wires through the holes and hide all the wires under the ramps. The problem with this solution is that it's going to take a long time to print. It also means that the ramps have to be bigger, so that there's enough room underneath. Alternatively, I use the laser cutter on cardboard or wood and glue several pieces together to create ramps. In this case, I won't make any holes, but instead I'll have 1 second box glued to the back of my piggy bank (in which I'll have made holes) where I'll put all the wires. </p>
 <p>Here's the modeling I've done so far, and also a prototype I made using the laser cutter. I don't think there'll be enough room underneath for a whole circuit.</p>
 <img src="toboggansketchv1.png" alt="Image" style="width:500px;height:400px;"/>
@@ -165,6 +194,49 @@ void loop() {
 <h2>JULY 13</h2>
 <p>As I mentioned, I want to concentrate on the code. So I spent several hours on the subject today. First, I went back to my codes from yesterday (see above), when I'd managed to code for 2 sensors that a coin was detected. So I did the same thing, but with 5 sensors this time.</p>
 <h2>FOUTRE UN CODE </h2>
+<pre>
+  <code class="language-arduino">
+const int sensor1Pin = A4; // Sensor 1, A4 pin
+const int sensor2Pin = A2; // Sensor 2, A2 pin
+const int sensor3Pin = A0; // Sensor 3, A0 pin
+const int sensor4Pin = A5; // Sensor 4, pin 5
+const int sensor5Pin = A3; // Sensor 5, pin 4
+
+void setup() {
+  Serial.begin(9600); // Initialize serial communication at 9600 baud
+}
+
+void loop() {
+  if (digitalRead(sensor1Pin) == HIGH) {
+    Serial.println("Coin detected: Sensor 1");
+    delay(500); // Wait for 500 milliseconds to avoid bouncing
+  }
+
+  if (digitalRead(sensor2Pin) == HIGH) {
+    Serial.println("Coin detected: Sensor 2");
+    delay(500); // Wait for 500 milliseconds to avoid bouncing
+  }
+
+  if (digitalRead(sensor3Pin) == HIGH) {
+    Serial.println("Coin detected: Sensor 3");
+    delay(500); // Wait for 500 milliseconds to avoid bouncing
+  }
+
+  if (digitalRead(sensor4Pin) == HIGH) {
+    Serial.println("Coin detected: Sensor 4");
+    delay(500); // Wait for 500 milliseconds to avoid bouncing
+  }
+
+  if (digitalRead(sensor5Pin) == HIGH) {
+    Serial.println("Coin detected: Sensor 5");
+    delay(500); // Wait for 500 milliseconds to avoid bouncing
+  }
+}
+
+    </code>
+  </pre>
+
+
 <p> I then moved on to counting. I started by creating local totals for each sensor based on the coin associated with the sensor. I did this in the order of my ramp:</p>
 <ul> 
   <li>Sensor 1: 10 cents</li>
