@@ -204,7 +204,6 @@ void loop() {
 
 <h2>JULY 13</h2>
 <p>As I mentioned, I want to concentrate on the code. So I spent several hours on the subject today. First, I went back to my codes from yesterday (see above), when I'd managed to code for 2 sensors that a coin was detected. So I did the same thing, but with 5 sensors this time.</p>
-<h2>FOUTRE UN CODE </h2>
 <pre>
   <code class="language-arduino">
 const int sensor1Pin = A4; // Sensor 1, A4 pin
@@ -254,7 +253,7 @@ void loop() {
   </pre>
 
 
-<p> I then moved on to counting. I started by creating local totals for each sensor based on the coin associated with the sensor. I did this in the order of my ramp:</p>
+<p> I then moved on to counting. I started by associating one coin with one sensor. I did this in the order of my ramp:</p>
 <ul> 
   <li>Sensor 1: 10 cents</li>
   <li>Sensor 2: 1 cent</li>
@@ -262,9 +261,52 @@ void loop() {
   <li>Sensor 4: 25 cents</li>
   <li>Sensor 5: 1 dollar</li>
 </ul>
-<h2>FOUTRE UN EXTRAIT DU CODE.</h2>
+<p>I created a total that would print everytime a sensor is "on".I first tested for one sensor, then 2, then all 5. I'm not going to put the 3 codes each time since it's the same thing.</p>
+<p>Here's the code for 2 sensors.</p>
+<pre>
+  <code class="language-arduino">
+const int sensor1Pin = A4;    // Digital pin for sensor 1
+const int sensor2Pin = A2;    // Digital pin for sensor 2
+int cents = 0;               // Variable to count cents
 
+void setup() {
+  Serial.begin(9600);        // Initialize serial communication at 9600 baud
 
+  pinMode(sensor1Pin, INPUT);// Configure sensor 1 pin as input
+  pinMode(sensor2Pin, INPUT);// Configure sensor 2 pin as input
+}
+
+void loop() {
+  int sensor1Value = digitalRead(sensor1Pin);  // Read the state of sensor 1
+  int sensor2Value = digitalRead(sensor2Pin);  // Read the state of sensor 2
+
+  if (sensor1Value == HIGH) {
+    Serial.println("Coin detected 1");
+    cents += 10;             // Add 10 cents for each sensor 1 detection
+    Serial.print("Total: ");
+    Serial.print(cents);
+    Serial.println(" cents");
+    delay(500);              // Wait for 500 milliseconds to debounce
+  }
+
+  if (sensor2Value == HIGH) {
+    Serial.println("Coin detected 2");
+    cents += 1;              // Add 1 cent for each sensor 2 detection
+    Serial.print("Total: ");
+    Serial.print(cents);
+    Serial.println(" cents");
+    delay(500);              // Wait for 500 milliseconds to debounce
+  }
+}
+
+    </code>
+  </pre>
+<p>For the rest of the code, I just modified the if loops according to the sensor.</p>
+<p>Then I wanted to add local totals for each sensor. That is, if I press sensor 3 for the 3rd time and I already have 1 dollar in my piggy bank. Then I see in the serial monitor.</p>
+<ul> 
+  <li>Total 3= 15 cents</li>
+  <li>Total= 1 dollar and 5 cents</li>
+</ul>
 <script src="../strapdown.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" ></script>
 
