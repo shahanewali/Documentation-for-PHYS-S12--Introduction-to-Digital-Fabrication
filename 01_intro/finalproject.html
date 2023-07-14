@@ -121,7 +121,15 @@ Here are the measures I used that finally worked.</p>
 <p>Today, we learnt about sensors so I have decided to try another type of sensors for my final project: piezo discs.
 I think this is a good idea and that this will work better than the DIY IR sensors.I started with one sensor and I coded on Arduino so that I would print "coin detected" if it "felt" something. It worked well even for the smallest coins.</p>
 <p>Then, I added another piezo disc to my circuit and connected it to another pin on the Arduino board. I changed my code so that it would print "coin detected 1" when a coin fell on it and "coin detected 2" when a coin fell on the other one.Again, it worked really well. I even tried to simulate the fall from the sorting ramp.</p>
-<p>Here is the circuit and the codes I used.</p>
+<p>Here is the material, the circuit and the codes I used.</p>
+<ul> 
+  <li>Arduino Uno </li>
+  <li>Piezo discs </li>
+  <li>Breadboard</li>
+  <li>Wires</li>
+  <li>1 MegaOhm Resistors</li>
+</ul>
+<img src="schemacircuitpiezo1.png" alt="Image" style="width:400px;height:250px;"/>
 <img src="circuitwith2piezosv1.jpg" alt="Image" style="width:400px;height:600px;"/>
 <pre>
   <code class="language-arduino">
@@ -206,6 +214,12 @@ const int sensor4Pin = A5; // Sensor 4, pin 5
 const int sensor5Pin = A3; // Sensor 5, pin 4
 
 void setup() {
+  pinMode(sensor1Pin, INPUT); // Configure sensor1Pin as input
+  pinMode(sensor2Pin, INPUT); // Configure sensor2Pin as input
+  pinMode(sensor3Pin, INPUT); // Configure sensor3Pin as input
+  pinMode(sensor4Pin, INPUT); // Configure sensor4Pin as input
+  pinMode(sensor5Pin, INPUT); // Configure sensor5Pin as input
+  
   Serial.begin(9600); // Initialize serial communication at 9600 baud
 }
 
