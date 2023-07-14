@@ -71,7 +71,7 @@ For this I used:</p>
 <p> This is the code I used.</p>
 <pre>
   <code class="language-arduino">
-const int conductor1Pin = A0;
+const int tx_pin= A0;
 const int conductor2Pin = A2;
 const int N_samples = 100;    // Number of samples to take. A higher number slows down the program but reduces the variation.
 
@@ -79,8 +79,8 @@ unsigned long previousTime;  // Previous time for delay measurement
 unsigned long startTime;      // Start time of the program execution
 
 void setup() {
-  pinMode(conductor1Pin, OUTPUT);      // Pin for conductor 1
-  Serial.begin(115200);
+  pinMode(tx_pin, OUTPUT);      // Pin for conductor 1
+  Serial.begin(9600);
 
   previousTime = millis();  // Initialize previous time
   startTime = millis();      // Record the start time
@@ -94,11 +94,11 @@ void loop() {
     previousTime = currentTime;  // Update previous time
     
     for (int i = 0; i < N_samples; i++) {
-      digitalWrite(conductor1Pin, HIGH);              // Apply a high voltage to conductor 1.
+      digitalWrite(tx_pin, HIGH);              // Apply a high voltage to conductor 1.
       delayMicroseconds(100);            // Delay to reach a steady state.
       int highReading = analogRead(conductor2Pin);  // Measure the response of conductor 2 with high voltage.
       
-      digitalWrite(conductor1Pin, LOW);               // Set the voltage to zero on conductor 1.
+      digitalWrite(tx_pin, LOW);               // Set the voltage to zero on conductor 1.
       delayMicroseconds(100);            // Delay to reach a steady state.
       int lowReading = analogRead(conductor2Pin);   // Measure the response of conductor 2 with low voltage.
       
@@ -124,6 +124,7 @@ void loop() {
 <img src="verreplein1.jpg" alt="Image" style="width:300px;height:300px;"/>
 <img src="verreplein2.jpg" alt="Image" style="width:300px;height:300px;"/>
 <img src="liquidsensorgraph.png" alt="Image" style="width:700px;height:400px;"/>
+<p>I'm going to have to start having nicer codes with classes etc.</p>
 </xmp>
 </body>
 
