@@ -58,14 +58,69 @@ Here is the material I used, the circuit diagram and the code.</p>
   <li>Arduino Uno</li>
   <li>IR transmitter</li>
   <li>IR Receiver </li>
-  <li>Resistors 220 Ohm </li>
+  <li>Resistors 100 & 100K Ohms </li>
   <li>Wires</li>
   <li>LED</li>
   <li>Potentiometer</li>
   <li>Breadboard</li>
 </ul>
+<p>This time, I changed the resistors to 100ohms and 100K ohms as indicated in the course, which worked much better.</p>
 <img src="circuitIRsensorsDIY.png" alt="Image" style="width:550px;height:400px;"/>
-<img src="photocircuitIRsensorsDIY.jpg" alt="Image" style="width:550px;height:400px;"/>
+<img src="photocircuitIRsensorsDIY2.jpg" alt="Image" style="width:300px;height:600px;"/>
+<pre>
+  <code class="language-arduino">
+const int analogInPin = A0;  // Analog input pin that the receiver is attached to
+int sensorValue = 0;        // value read from the receiver
+
+void setup() {
+  // initialize serial communications at 9600 bps:
+  Serial.begin(9600);
+  //initialize the indicator LED:
+  pinMode(13, OUTPUT);
+}
+
+void loop() {
+  // read the analog in value:
+  sensorValue = analogRead(analogInPin);
+
+  // print the results to the serial monitor:
+  Serial.print("\nsensor = ");
+  Serial.print(sensorValue);
+  //the threshold found fron analog In Out program was when object is detected, the sensor value is below 100
+  //set the threshold whihc you get
+  //the threshold varies for different sets of emitter-receiver pairs
+  if(sensorValue < 100){ //checks if object is there or not
+    digitalWrite(13, HIGH);
+    Serial.print("\nObject Detected");
+    }
+  else{
+    digitalWrite(13, LOW);
+    Serial.print("\nNo object in Front");
+    }
+  delay(500);
+}
+
+    </code>
+  </pre>
+
+<p>I realized I didn't have a ruler at home, so I had to come up with some ideas for measuring. I reused a 4cm square that I'd cut with a laser and marked a line every 4cm on an A4 sheet.</p>
+<img src="reglesystemeD.jpg" alt="Image" style="width:300px;height:600px;"/>
+<p>I then tested my sensors with different set-ups. I noticed that it picked up daylight, so I turned off my lights, and I also noticed that it picked up a sheet of paper up to 30cm, whereas after 20cm it no longer detected my hand.</p>
+<p>To increase the maximum distance at which an object can be detected, simply change this value in the if loop of the code.<p>
+  <ul> 
+  <li>if(sensorValue < 100){</li>
+</ul>
+<p>The higher the value, the further away objects can be detected by the sensor.</p>
+<p>In my case, as I didn't have a measuring tape or a real ruler, I set the value to 300, which allowed the leaf to be detected between 0 and 30cm.</p>
+<video width="600" height="400" controls autoplay>
+      <source src="videoIRsensorsquifonctionne.mp4" type=video/mp4>
+    </video>
+<p>For example, if I set this value to 800, I could raise my sheet of paper to almost 3 times my home-made ruler.</p>
+<p>I also noticed that the further away I was, the higher the analog value read. On the other hand, when I was very close to the sensor, the values hovered around 20. There may be an inversion of values, but that's why in the code the condition for an object to be detected is that the analog value read must be less than 300.</p>
+<p>I then noted the analog values read as a function of the distance of my object from the sensor.</p>
+<p>Remember that having set 300 in the code, the maximum distance at which an object can be detected is around 30cm.</p>
+<img src="tableauvaleurIRsensors.png" alt="Image" style="width:300px;height:400px;"/>
+
 
 <h4>2. Capacitive Sensor: Liquid Volume Sensor</h4>
 <p> For the second part of the assignment, I decided to make a liquid volume sensor.
