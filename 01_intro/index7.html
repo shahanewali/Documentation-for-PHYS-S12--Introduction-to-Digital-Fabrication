@@ -54,6 +54,7 @@ Prepare CAD files for CNC (next class). Consider either 2D DXF files for routing
 And here is a <a href="https://nathanmelenbrink.github.io/intro-dig-fab/08_output/index.html">Link to the original assignment page</a>
 
 <p>This week, I first had fun with the RGB led and I also used the OLED screen a little.</p>
+<h2> RGB LED</h2>
 <p>Let's start with the RGB LED. Here's a circuit diagram.</p>
 <img src="schemacircuitledRGB.png" alt="Image" style="width:500px;height:400px;"/>
 <p>First, I used the code given in the course.</p>
@@ -83,6 +84,132 @@ void loop() {
       <source src="RGBledessai1.mp4" type=video/mp4>
     </video>
 
+  <p>The next step was to try to control each color channel independently but first I wanted to see a color gradient on my led. I used this code for this.</p>
+  <pre>
+  <code class="language-arduino">
+// Pin definitions
+const int redPin = 9;
+const int greenPin = 10;
+const int bluePin = 11;
+
+void setup() {
+  // Configure pins as output
+  pinMode(redPin, OUTPUT);
+  pinMode(greenPin, OUTPUT);
+  pinMode(bluePin, OUTPUT);
+}
+
+void loop() {
+  // Variation of color components
+  for (int i = 0; i < 256; i++) {
+    // Red component
+    analogWrite(redPin, i);
+    delay(5);
+
+    // Green component
+    analogWrite(greenPin, 255 - i);
+    delay(5);
+
+    // Blue component
+    analogWrite(bluePin, 0);
+    delay(5);
+  }
+
+  for (int i = 0; i < 256; i++) {
+    // Red component
+    analogWrite(redPin, 255 - i);
+    delay(5);
+
+    // Green component
+    analogWrite(greenPin, 0);
+    delay(5);
+
+    // Blue component
+    analogWrite(bluePin, i);
+    delay(5);
+  }
+
+  for (int i = 0; i < 256; i++) {
+    // Red component
+    analogWrite(redPin, 0);
+    delay(5);
+
+    // Green component
+    analogWrite(greenPin, i);
+    delay(5);
+
+    // Blue component
+    analogWrite(bluePin, 255 - i);
+    delay(5);
+  }
+}
+    </code>
+  </pre>
+<video width="600" height="400" controls autoplay>
+      <source src="RGBledgradient.mp4" type=video/mp4>
+    </video>
+<p>Finally, to be able to control each color channel independently, I used potentiometers and PWM.
+<img src="schemacircuitledRGB2.png" alt="Image" style="width:500px;height:400px;"/>
+<pre>
+  <code class="language-arduino">
+int RGBLED_RedPin = 9;
+int RGBLED_GreenPin = 10;
+int RGBLED_BluePin = 11;
+int Previous_PWMValue_RedPin = 0;
+int Threshold_PWMValue_RedPin = 0;
+int Previous_PWMValue_GreenPin = 0;
+int Threshold_PWMValue_GreenPin = 0;
+int Previous_PWMValue_BluePin = 0;
+int Threshold_PWMValue_BluePin = 0;
+
+void setup()
+{
+  Serial.begin(9600); // initialize serial communications at 9600 bps
+  pinMode(RGBLED_RedPin, OUTPUT);
+  pinMode(RGBLED_GreenPin, OUTPUT);
+  pinMode(RGBLED_BluePin, OUTPUT);
+}
+
+void loop()
+{
+  int Pot_RedPin = analogRead(A0);
+  int PWMValue_RedPin = Pot_RedPin / 4;
+  int Pot_GreenPin = analogRead(A1);
+  int PWMValue_GreenPin = Pot_GreenPin / 4;
+  int Pot_BluePin = analogRead(A2);
+  int PWMValue_BluePin = Pot_BluePin / 4;
+
+  analogWrite(RGBLED_RedPin, PWMValue_RedPin);
+  analogWrite(RGBLED_GreenPin, PWMValue_GreenPin);
+  analogWrite(RGBLED_BluePin, PWMValue_BluePin);
+
+  Threshold_PWMValue_RedPin = abs(Pot_RedPin - Previous_PWMValue_RedPin);
+  Threshold_PWMValue_GreenPin = abs(Pot_GreenPin - Previous_PWMValue_GreenPin);
+  Threshold_PWMValue_BluePin = abs(Pot_BluePin - Previous_PWMValue_BluePin);
+
+  if (Threshold_PWMValue_RedPin >= 10 || Threshold_PWMValue_GreenPin >= 10 || Threshold_PWMValue_BluePin >= 10)
+  {
+    Serial.print("RGB (");
+    Serial.print(PWMValue_RedPin);
+    Serial.print(", ");
+    Serial.print(PWMValue_GreenPin);
+    Serial.print(", ");
+    Serial.print(PWMValue_BluePin);
+    Serial.println(") ");
+  }
+
+  Previous_PWMValue_RedPin = Pot_RedPin;
+  Previous_PWMValue_GreenPin = Pot_GreenPin;
+  Previous_PWMValue_BluePin = Pot_BluePin;
+
+  delay(2);
+}
+
+    </code>
+  </pre>
+<video width="600" height="400" controls autoplay>
+      <source src="RGBledpotentiometre.mp4" type=video/mp4>
+    </video>
 </xmp>
 </body>
 
