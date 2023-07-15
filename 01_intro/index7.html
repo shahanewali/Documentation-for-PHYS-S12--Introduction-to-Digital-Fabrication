@@ -56,7 +56,32 @@ And here is a <a href="https://nathanmelenbrink.github.io/intro-dig-fab/08_outpu
 <p>This week, I first had fun with the RGB led and I also used the OLED screen a little.</p>
 <p>Let's start with the RGB LED. Here's a circuit diagram.</p>
 <img src="schemacircuitledRGB.png" alt="Image" style="width:500px;height:400px;"/>
+<p>First, I used the code given in the course.</p>
+<pre>
+  <code class="language-arduino">
+void setup() {
+  pinMode(9, OUTPUT);   // red
+  pinMode(10, OUTPUT);  // green
+  pinMode(11, OUTPUT);  // blue  
+}
 
+void loop() {
+ digitalWrite(9, HIGH);   // turn on red channel
+ delay(500);              // delay 
+ digitalWrite(10, HIGH);  // turn on green channel
+ delay(500);              // delay
+ digitalWrite(11, HIGH);  // turn on green channel
+ delay(500);              // delay
+ digitalWrite(9, LOW);    // turn off red channel
+ digitalWrite(10, LOW);   // turn off green channel
+ digitalWrite(11, LOW);   // turn off blue channel
+ delay(3000);             // delay
+}
+    </code>
+  </pre>
+<video width="600" height="400" controls autoplay>
+      <source src="RGBledessai1.mp4" type=video/mp4>
+    </video>
 
 </xmp>
 </body>
