@@ -541,76 +541,110 @@ void loop()
   <code class="language-arduino">
 #include LiquidCrystal.h
 
-LiquidCrystal lcd(12, 11, 5, 4, 3, 2); // LCD screen
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2); // LCD Screen
 
-const int sensor1Pin = A4; // Sensor 1, connected to A4 pin
-const int sensor2Pin = A2; // Sensor 2, connected to A2 pin
-const int sensor3Pin = A0; // Sensor 3, connected to A0 pin
-const int sensor4Pin = A3; // Sensor 4, connected to A3 pin
-const int sensor5Pin = A5; // Sensor 5, connected to A5 pin
+const int sensor1Pin = A0; // Sensor 1, A4 pin
+const int sensor2Pin = A1; // Sensor 2, A2 pin
+const int sensor3Pin = A2; // Sensor 3, A0 pin
+const int sensor4Pin = A3; // Sensor 4, A3 pin
+const int sensor5Pin = 9; // Sensor 5, A5 pin
 
-int total1 = 0;       // Total for sensor 1 (10 cents)
-int total2 = 0;       // Total for sensor 2 (1 cent)
-int total3 = 0;       // Total for sensor 3 (5 cents)
-int total4 = 0;       // Total for sensor 4 (25 cents)
-int total5 = 0;       // Total for sensor 5 (1 dollar)
-int totalGlobal = 0;  // Overall total
+int total1 = 0; // Total for sensor 1 (10 cents)
+int total2 = 0; // Total for sensor 2 (1 cent)
+int total3 = 0; // Total for sensor 3 (5 cents)
+int total4 = 0; // Total for sensor 4 (25 cents)
+int total5 = 0; // Total for sensor 5 (1 dollar)
+float totalGlobal = 0.0; // Global total
 
 void setup() {
-  lcd.begin(16, 2); // Initialize the LCD screen with 16 columns and 2 rows
-  Serial.begin(9600); // Initialize serial communication at 9600 baud
-
   pinMode(sensor1Pin, INPUT); // Set sensor1Pin as input
   pinMode(sensor2Pin, INPUT); // Set sensor2Pin as input
   pinMode(sensor3Pin, INPUT); // Set sensor3Pin as input
   pinMode(sensor4Pin, INPUT); // Set sensor4Pin as input
   pinMode(sensor5Pin, INPUT); // Set sensor5Pin as input
+  lcd.begin(16, 2);
+  Serial.begin(9600); // Initialize serial communication at 9600 baud
 }
 
 void loop() {
   if (digitalRead(sensor1Pin) == HIGH) {
     total1 += 10;
-    totalGlobal += 10;
-    printTotal("Total 1", total1);
-    printOverallTotal(totalGlobal);
+    totalGlobal += 0.10;
+    Serial.print("Total 1: $");
+    Serial.print(total1 / 100.0, 2);
+    Serial.print(" (");
+    Serial.print(total1 / 10);
+    Serial.print(" coins)");
+    Serial.println();
+    Serial.print("Overall Total: $");
+    Serial.print(totalGlobal, 2);
+    Serial.println();
     updateLCD();
-    delay(500); // Wait for 500 milliseconds to avoid switch bounce
+    delay(500); // Wait for 500 milliseconds to avoid bouncing
   }
 
   if (digitalRead(sensor2Pin) == HIGH) {
     total2 += 1;
-    totalGlobal += 1;
-    printTotal("Total 2", total2);
-    printOverallTotal(totalGlobal);
+    totalGlobal += 0.01;
+    Serial.print("Total 2: $");
+    Serial.print(total2 / 100.0, 2);
+    Serial.print(" (");
+    Serial.print(total2);
+    Serial.print(" coins)");
+    Serial.println();
+    Serial.print("Overall Total: $");
+    Serial.print(totalGlobal, 2);
+    Serial.println();
     updateLCD();
-    delay(500); // Wait for 500 milliseconds to avoid switch bounce
+    delay(500); // Wait for 500 milliseconds to avoid bouncing
   }
 
   if (digitalRead(sensor3Pin) == HIGH) {
     total3 += 5;
-    totalGlobal += 5;
-    printTotal("Total 3", total3);
-    printOverallTotal(totalGlobal);
+    totalGlobal += 0.05;
+    Serial.print("Total 3: $");
+    Serial.print(total3 / 100.0, 2);
+    Serial.print(" (");
+    Serial.print(total3 / 5);
+    Serial.print(" coins)");
+    Serial.println();
+    Serial.print("Overall Total: $");
+    Serial.print(totalGlobal, 2);
+    Serial.println();
     updateLCD();
-    delay(500); // Wait for 500 milliseconds to avoid switch bounce
+    delay(500); // Wait for 500 milliseconds to avoid bouncing
   }
 
   if (digitalRead(sensor4Pin) == HIGH) {
     total4 += 25;
-    totalGlobal += 25;
-    printTotal("Total 4", total4);
-    printOverallTotal(totalGlobal);
+    totalGlobal += 0.25;
+    Serial.print("Total 4: $");
+    Serial.print(total4 / 100.0, 2);
+    Serial.print(" (");
+    Serial.print(total4 / 25);
+    Serial.print(" coins)");
+    Serial.println();
+    Serial.print("Overall Total: $");
+    Serial.print(totalGlobal, 2);
+    Serial.println();
     updateLCD();
-    delay(500); // Wait for 500 milliseconds to avoid switch bounce
+    delay(500); // Wait for 500 milliseconds to avoid bouncing
   }
 
   if (digitalRead(sensor5Pin) == HIGH) {
     total5 += 100;
-    totalGlobal += 100;
-    printTotal("Total 5", total5);
-    printOverallTotal(totalGlobal);
+    totalGlobal += 1.0;
+    Serial.print("Total 5: $");
+    Serial.print(total5 / 100.0, 2);
+    Serial.print(" (");
+    Serial.print(total5 / 100);
+    Serial.print(" coins)");
+    Serial.println();
+    Serial.print("Overall Total: $");
+    Serial.print(totalGlobal, 2);
+    Serial.println();
     updateLCD();
-    delay(500); // Wait for 500 milliseconds to avoid switch bounce
+    delay(500); // Wait for 500 milliseconds to avoid bouncing
   }
 }
 
@@ -621,33 +655,17 @@ void updateLCD() {
 
   lcd.setCursor(4, 1); // Set the cursor position to column 4, row 1
   lcd.print("$");
-  lcd.print(totalGlobal / 100); // Print the dollars portion of the total
-  lcd.print(".");
-  if ((totalGlobal % 100) < 10) {
-    lcd.print("0");
-  }
-  lcd.print(totalGlobal % 100); // Print the cents portion of the total
+  lcd.print(totalGlobal, 2); // Print the totalGlobal with 2 decimal places
 }
 
-void printTotal(const char* label, int total) {
-  Serial.print(label);
-  Serial.print(": ");
-  Serial.print(total);
-  Serial.print(" cents (");
-  Serial.print(total);
-  Serial.print(" coins)");
-  Serial.println();
-}
-
-void printOverallTotal(int total) {
-  Serial.print("Overall Total: $");
-  Serial.print(total / 100); // Print the dollars portion of the total
+void printAmount(int amount) {
+  Serial.print("$");
+  Serial.print(amount / 100);
   Serial.print(".");
-  if ((total % 100) < 10) {
+  if ((amount % 100) < 10) {
     Serial.print("0");
   }
-  Serial.print(total % 100); // Print the cents portion of the total
-  Serial.println();
+  Serial.print(amount % 100);
 }
 
     </code>
@@ -655,6 +673,188 @@ void printOverallTotal(int total) {
 <video width="600" height="400" controls autoplay>
       <source src="codeparfait1enaction.mp4" type=video/mp4>
     </video>
+
+<h2>JULY 15 </h2>
+Yesterday, I realised that it was possible to use I2C LCD screens which are much more easier to connect. This is the circuit.
+<img src="schemacircuit1LCDI2C.png" alt="Image" style="width:300px;height:100px;"/>
+<p>First, I did what I did before to understand how an I2C LCD worked. I had to download the library and look at the different commands.To adjust contrast, you just need to use the potzntiometre on the I2C with a screwdriver. A normal LCN and I2C screen don't initialize the same way for example.<p>
+<p>I tried this code.</p>
+ <pre>
+  <code class="language-arduino">
+#include "Wire.h"
+#include "LiquidCrystal_I2C.h"
+
+LiquidCrystal_I2C LCD(0x27,16,2);
+
+void setup() {
+   LCD.init(); 
+   LCD.backlight();
+   
+   LCD.setCursor(1, 0);
+   LCD.print("HELLO");
+  
+   LCD.setCursor(8, 1);
+   LCD.print("WORLD");
+}
+
+void loop() {
+   LCD.noDisplay();
+   delay(1000);
+   LCD.display();
+   delay(1000);
+}
+    </code>
+  </pre>
+<p>I've changed my previous code where the total was displayed on a normal LCD to display it on my new I2C LCD.</p>
+ <pre>
+  <code class="language-arduino">
+#include LiquidCrystal_I2C.h
+
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+const int capteur1Pin = A0; // Sensor 1, A4 pin
+const int capteur2Pin = A1; // Sensor 2, A2 pin
+const int capteur3Pin = A2; // Sensor 3, A0 pin
+const int capteur4Pin = A3; // Sensor 4, A3 pin
+const int capteur5Pin = 9; // Sensor 5, A5 pin
+
+int total1 = 0; // Total for sensor 1 (10 cents)
+int total2 = 0; // Total for sensor 2 (1 cent)
+int total3 = 0; // Total for sensor 3 (5 cents)
+int total4 = 0; // Total for sensor 4 (25 cents)
+int total5 = 0; // Total for sensor 5 (1 dollar)
+float totalGlobal = 0.0; // Overall total
+
+void setup() {
+  pinMode(capteur1Pin, INPUT); // Set sensor1Pin as input
+  pinMode(capteur2Pin, INPUT); // Set sensor2Pin as input
+  pinMode(capteur3Pin, INPUT); // Set sensor3Pin as input
+  pinMode(capteur4Pin, INPUT); // Set sensor4Pin as input
+  pinMode(capteur5Pin, INPUT); // Set sensor5Pin as input
+  lcd.init(); // Initialize the I2C LCD screen
+  lcd.backlight(); // Turn on the I2C LCD backlight
+  Serial.begin(9600); // Initialize serial communication at 9600 baud
+}
+
+void loop() {
+  if (digitalRead(capteur1Pin) == HIGH) {
+    total1 += 10;
+    totalGlobal += 0.10;
+    Serial.print("Total 1: $");
+    Serial.print(total1 / 100.0, 2);
+    Serial.print(" (");
+    Serial.print(total1 / 10);
+    Serial.print(" coins)");
+    Serial.println();
+    Serial.print("Overall Total: $");
+    Serial.print(totalGlobal, 2);
+    Serial.println();
+    updateLCD();
+    delay(500); // Wait for 500 milliseconds to debounce
+  }
+
+  if (digitalRead(capteur2Pin) == HIGH) {
+    total2 += 1;
+    totalGlobal += 0.01;
+    Serial.print("Total 2: $");
+    Serial.print(total2 / 100.0, 2);
+    Serial.print(" (");
+    Serial.print(total2);
+    Serial.print(" coins)");
+    Serial.println();
+    Serial.print("Overall Total: $");
+    Serial.print(totalGlobal, 2);
+    Serial.println();
+    updateLCD();
+    delay(500); // Wait for 500 milliseconds to debounce
+  }
+
+  if (digitalRead(capteur3Pin) == HIGH) {
+    total3 += 5;
+    totalGlobal += 0.05;
+    Serial.print("Total 3: $");
+    Serial.print(total3 / 100.0, 2);
+    Serial.print(" (");
+    Serial.print(total3 / 5);
+    Serial.print(" coins)");
+    Serial.println();
+    Serial.print("Overall Total: $");
+    Serial.print(totalGlobal, 2);
+    Serial.println();
+    updateLCD();
+    delay(500); // Wait for 500 milliseconds to debounce
+  }
+
+  if (digitalRead(capteur4Pin) == HIGH) {
+    total4 += 25;
+    totalGlobal += 0.25;
+    Serial.print("Total 4: $");
+    Serial.print(total4 / 100.0, 2);
+    Serial.print(" (");
+    Serial.print(total4 / 25);
+    Serial.print(" coins)");
+    Serial.println();
+    Serial.print("Overall Total: $");
+    Serial.print(totalGlobal, 2);
+    Serial.println();
+    updateLCD();
+    delay(500); // Wait for 500 milliseconds to debounce
+  }
+
+  if (digitalRead(capteur5Pin) == HIGH) {
+    total5 += 100;
+    totalGlobal += 1.0;
+    Serial.print("Total 5: $");
+    Serial.print(total5 / 100.0, 2);
+    Serial.print(" (");
+    Serial.print(total5 / 100);
+    Serial.print(" coins)");
+    Serial.println();
+    Serial.print("Overall Total: $");
+    Serial.print(totalGlobal, 2);
+    Serial.println();
+    updateLCD();
+    delay(500); // Wait for 500 milliseconds to debounce
+  }
+}
+
+void updateLCD() {
+  lcd.clear(); // Clear the I2C LCD screen
+  lcd.setCursor(5, 0); // Set the cursor to column 0, line 0
+  lcd.print("Total:");
+
+  lcd.setCursor(4, 1); // Set the cursor to column 0, line 1
+  lcd.print("$");
+  int cents = static_cast<int>(totalGlobal * 100); // Convert the total to cents as an integer
+  lcd.print(cents / 100); // Display the dollar part of the total
+  lcd.print(".");
+  if ((cents % 100) < 10) {
+    lcd.print("0");
+  }
+  lcd.print(cents % 100); // Display the cents part of the total
+}
+
+void printAmount(int amount) {
+  Serial.print("$");
+  Serial.print(amount / 100);
+  Serial.print(".");
+  if ((amount % 100) < 10) {
+    Serial.print("0");
+  }
+  Serial.print(amount % 100);
+}
+
+    </code>
+  </pre>
+<p>I also I learnt that I could use multiple I2C LCDs at the same time which will be useful to display all the informations. In order to use multiple I2C LCD, it is necessary to change the I2C adress.
+<img src="changeI2Cadress.png" alt="Image" style="width:500px;height:400px;"/>
+<p>To check the address of an I2C, there's a function available in the Arduino examples. Before I changed my addresses, the 3 I2Cs had the address 0x27.</p>
+<p>Kassia helped me with this task. (Thank you Kassia)</p>
+<img src="I2CLCDnewaddress.jpg" alt="Image" style="width:400px;height:400px;"/>
+<p>Thanks to the I2C scanner function, I've obtained my new addresses: 0x26 (A0 bridged) and 0x23(A2 bridged).</p>
+<p>Now it is possible to use all 3 at the same time.</p>
+<img src="schemacircuit2LCDI2C.png" alt="Image" style="width:500px;height:400px;"/>
+
 
 <script src="../strapdown.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" ></script>
