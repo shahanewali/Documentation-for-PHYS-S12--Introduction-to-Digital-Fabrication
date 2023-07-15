@@ -315,7 +315,7 @@ void loop() {
   <li>Total= 1 dollar and 5 cents</li>
 </ul>
 <p>I've also added the number of x centime coins inserted next to the local total.</p>
-<p> Here is the code.</p>
+<p> Here is the code.</p> <h3>Important code </h3>
 <pre>
   <code class="language-arduino">
 const int sensor1Pin = A4; // Sensor 1, A4 pin
@@ -535,8 +535,9 @@ void loop()
 
 <h2> JULY 14 </h2>
 <p>After experimenting with the LCD screen yesterday, I wanted to try and get it to return the result of the Piezo discs counting code I made yesterday. I can only get it to return the global total at the moment, as there isn't enough space on the LCD screen otherwise.</p>
-<p>Here is the circuit.</p>
+<p>Here is the circuit and the code.</p>
 <img src="photocircuitcodeparfaitlcd.jpg" alt="Image" style="width:400px;height:350px;"/>
+<h3>Important code</h3>
  <pre>
   <code class="language-arduino">
 #include LiquidCrystal.h
@@ -675,6 +676,7 @@ void printAmount(int amount) {
     </video>
 
 <h2>JULY 15 </h2>
+<h2>Part1:Coding</h2>
 Yesterday, I realised that it was possible to use I2C LCD screens which are much more easier to connect. This is the circuit.
 <img src="schemacircuit1LCDI2C.png" alt="Image" style="width:300px;height:100px;"/>
 <p>First, I did what I did before to understand how an I2C LCD worked. I had to download the library and look at the different commands.To adjust contrast, you just need to use the potzntiometre on the I2C with a screwdriver. A normal LCN and I2C screen don't initialize the same way for example.<p>
@@ -706,9 +708,10 @@ void loop() {
     </code>
   </pre>
 <p>I've changed my previous code where the total was displayed on a normal LCD to display it on my new I2C LCD.</p>
+<h3>Important code</h3>
  <pre>
   <code class="language-arduino">
-#include LiquidCrystal_I2C.h
+#include "LiquidCrystal_I2C.h"
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
@@ -854,6 +857,228 @@ void printAmount(int amount) {
 <p>Thanks to the I2C scanner function, I've obtained my new addresses: 0x26 (A0 bridged) and 0x23(A2 bridged).</p>
 <p>Now it is possible to use all 3 at the same time.</p>
 <img src="schemacircuit2LCDI2C.png" alt="Image" style="width:500px;height:400px;"/>
+<p>I checked if it worked with this code.</p>
+ <pre>
+  <code class="language-arduino">
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+LiquidCrystal_I2C lcd1(0x27, 16, 2);  // LCD I2C display
+LiquidCrystal_I2C lcd2(0x26, 16, 2);  // Second I2C LCD display
+LiquidCrystal_I2C lcd3(0x23, 16, 2);  // Third I2C LCD display
+
+void setup() {
+  lcd1.init();
+  lcd1.clear();         
+  lcd1.backlight();      // Make sure the backlight is turned on
+  
+  lcd2.init();
+  lcd2.clear();
+  lcd2.backlight();
+  
+  lcd3.init();
+  lcd3.clear();
+  lcd3.backlight();
+
+  lcd1.setCursor(2, 0);  // Move the cursor to position 2 of line 0 on the LCD I2C display
+  lcd1.print("Hello World!");
+
+  lcd2.setCursor(2, 0);  // Move the cursor to position 2 of line 0 on the I2C LCD display
+  lcd2.print("Bonjour!");
+
+  lcd3.setCursor(2, 0);  // Move the cursor to position 2 of line 0 on the I2C LCD display
+  lcd3.print("Goodnight");
+}
+
+void loop() {
+  // The program does nothing in the loop
+}
+
+    </code>
+  </pre>
+<img src="testaffichage3LCDI2C.jpg" alt="Image" style="width:400px;height:500px;"/>
+<h2>Part 2: Building</h2>
+<p> I printed my first toboggan prototype with the 3D printer after making it with a laser cutter and tested it to see if it worked.</p>
+<img src="toboggan3Dprintedv1.jpg" alt="Image" style="width:400px;height:500px;"/>
+<p>I tested with the code that displays the total on the LCD screen. It works very well. However, I noted that I could make a few modifications to the slide, which I did in fusion 360. I then ran a 3D print again.</p>
+<h2>VIDEO A METTRE DU TEST ABSOLUMENT</h2>
+<img src="toboggan3Dv2.jpg" alt="Image" style="width:500px;height:450px;"/>
+<p>I'll continue this " building " part next week.</p>
+
+<h2>JULY 16</h2>
+<p>Today, I continued to work on my code. I modified the function that displayed my total on an LCD screen to display it on my 3 screens. I had to modify my LCD update function and also change my set-ups.</p>
+ <pre>
+  <code class="language-arduino">
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+LiquidCrystal_I2C lcd1(0x27, 16, 2);
+LiquidCrystal_I2C lcd2(0x26, 16, 2);
+LiquidCrystal_I2C lcd3(0x23, 16, 2);
+
+const int capteur1Pin = A0; // Sensor 1, A4 pin
+const int capteur2Pin = A1; // Sensor 2, A2 pin
+const int capteur3Pin = A2; // Sensor 3, A0 pin
+const int capteur4Pin = A3;  // Sensor 4, A3 pin
+const int capteur5Pin = 9;  // Sensor 5, A5 pin
+
+int total1 = 0; // Total for sensor 1 (10 cents)
+int total2 = 0; // Total for sensor 2 (1 cent)
+int total3 = 0; // Total for sensor 3 (5 cents)
+int total4 = 0; // Total for sensor 4 (25 cents)
+int total5 = 0; // Total for sensor 5 (1 dollar)
+float totalGlobal = 0.0; // Overall total
+
+void setup() {
+  pinMode(capteur1Pin, INPUT); // Set sensor1Pin as input
+  pinMode(capteur2Pin, INPUT); // Set sensor2Pin as input
+  pinMode(capteur3Pin, INPUT); // Set sensor3Pin as input
+  pinMode(capteur4Pin, INPUT); // Set sensor4Pin as input
+  pinMode(capteur5Pin, INPUT); // Set sensor5Pin as input
+  lcd1.init(); // Initialize LCD1
+  lcd1.backlight(); // Enable backlight for LCD1
+  lcd2.init(); // Initialize LCD2
+  lcd2.backlight(); // Enable backlight for LCD2
+  lcd3.init(); // Initialize LCD3
+  lcd3.backlight(); // Enable backlight for LCD3
+  Serial.begin(9600); // Initialize serial communication at 9600 bauds
+}
+
+void loop() {
+  if (digitalRead(capteur1Pin) == HIGH) {
+    total1 += 10;
+    totalGlobal += 0.10;
+    Serial.print("Total 1: $");
+    Serial.print(total1 / 100.0, 2);
+    Serial.print(" (");
+    Serial.print(total1 / 10);
+    Serial.print(" coins)");
+    Serial.println();
+    Serial.print("Overall Total: $");
+    Serial.print(totalGlobal, 2);
+    Serial.println();
+    updateLCD();
+    delay(500); // Wait for 500 milliseconds to avoid debounce
+  }
+
+  if (digitalRead(capteur2Pin) == HIGH) {
+    total2 += 1;
+    totalGlobal += 0.01;
+    Serial.print("Total 2: $");
+    Serial.print(total2 / 100.0, 2);
+    Serial.print(" (");
+    Serial.print(total2);
+    Serial.print(" coins)");
+    Serial.println();
+    Serial.print("Overall Total: $");
+    Serial.print(totalGlobal, 2);
+    Serial.println();
+    updateLCD();
+    delay(500); // Wait for 500 milliseconds to avoid debounce
+  }
+
+  if (digitalRead(capteur3Pin) == HIGH) {
+    total3 += 5;
+    totalGlobal += 0.05;
+    Serial.print("Total 3: $");
+    Serial.print(total3 / 100.0, 2);
+    Serial.print(" (");
+    Serial.print(total3 / 5);
+    Serial.print(" coins)");
+    Serial.println();
+    Serial.print("Overall Total: $");
+    Serial.print(totalGlobal, 2);
+    Serial.println();
+    updateLCD();
+    delay(500); // Wait for 500 milliseconds to avoid debounce
+  }
+
+  if (digitalRead(capteur4Pin) == HIGH) {
+    total4 += 25;
+    totalGlobal += 0.25;
+    Serial.print("Total 4: $");
+    Serial.print(total4 / 100.0, 2);
+    Serial.print(" (");
+    Serial.print(total4 / 25);
+    Serial.print(" coins)");
+    Serial.println();
+    Serial.print("Overall Total: $");
+    Serial.print(totalGlobal, 2);
+    Serial.println();
+    updateLCD();
+    delay(500); // Wait for 500 milliseconds to avoid debounce
+  }
+
+  if (digitalRead(capteur5Pin) == HIGH) {
+    total5 += 100;
+    totalGlobal += 1.0;
+    Serial.print("Total 5: $");
+    Serial.print(total5 / 100.0, 2);
+    Serial.print(" (");
+    Serial.print(total5 / 100);
+    Serial.print(" coins)");
+    Serial.println();
+    Serial.print("Overall Total: $");
+    Serial.print(totalGlobal, 2);
+    Serial.println();
+    updateLCD();
+    delay(500); // Wait for 500 milliseconds to avoid debounce
+  }
+}
+
+void updateLCD() {
+  lcd1.clear(); // Clear LCD1
+  lcd1.setCursor(5, 0);
+  lcd1.print("Total:");
+
+  lcd1.setCursor(4, 1);
+  lcd1.print("$");
+  int cents = static_cast<int>(totalGlobal * 100);
+  lcd1.print(cents / 100);
+  lcd1.print(".");
+  if ((cents % 100) < 10) {
+    lcd1.print("0");
+  }
+  lcd1.print(cents % 100);
+
+  lcd2.clear(); // Clear LCD2
+  lcd2.setCursor(5, 0);
+  lcd2.print("Total:");
+
+  lcd2.setCursor(4, 1);
+  lcd2.print("$");
+  lcd2.print(cents / 100);
+  lcd2.print(".");
+  if ((cents % 100) < 10) {
+    lcd2.print("0");
+  }
+  lcd2.print(cents % 100);
+
+  lcd3.clear(); // Clear LCD3
+  lcd3.setCursor(5, 0);
+  lcd3.print("Total:");
+
+  lcd3.setCursor(4, 1);
+  lcd3.print("$");
+  lcd3.print(cents / 100);
+  lcd3.print(".");
+  if ((cents % 100) < 10) {
+    lcd3.print("0");
+  }
+  lcd3.print(cents % 100);
+}
+
+void printAmount(int amount) {
+  Serial.print("$");
+  Serial.print(amount / 100);
+  Serial.print(".");
+  if ((amount % 100) < 10) {
+    Serial.print("0");
+  }
+  Serial.print(amount % 100);
+}
+    </code>
+  </pre>
 
 
 <script src="../strapdown.js"></script>
