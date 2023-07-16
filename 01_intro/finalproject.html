@@ -1227,10 +1227,10 @@ void updateLCD() {
   lcd1.print(total3 * 0.05, 2);
   
   lcd2.clear(); // Clear the second I2C LCD screen
-  lcd2.setCursor(0, 0); // Set the cursor to column 0, row 0
+  lcd2.setCursor(5, 0); // Set the cursor to column 0, row 0
   lcd2.print("Total:");
 
-  lcd2.setCursor(0, 1); // Set the cursor to column 0, row 1
+  lcd2.setCursor(4, 1); // Set the cursor to column 0, row 1
   lcd2.print("$");
   lcd2.print(totalGlobal, 2); // Display the overall total with two decimal places
 }
