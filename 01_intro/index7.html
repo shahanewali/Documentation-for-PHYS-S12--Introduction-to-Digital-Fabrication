@@ -83,17 +83,35 @@ void loop() {
 }
     </code>
   </pre>
-  <script>
+<script>
   document.addEventListener("DOMContentLoaded", function() {
     const preElement = document.getElementById("arduino-code");
     const codeElement = preElement.querySelector("code");
+    const codeText = codeElement.textContent;
+
+    // Fonction pour créer des éléments de balise <span> avec une classe donnée
+    const createSpanElement = (className, text) => {
+      const spanElement = document.createElement("span");
+      spanElement.classList.add(className);
+      spanElement.textContent = text;
+      return spanElement;
+    };
 
     // Appliquer les classes CSS personnalisées aux éléments correspondants
-    codeElement.innerHTML = codeElement.innerHTML
-      .replace(/\/\/.*$/gm, '<span class="comment">$&</span>') // Commentaires
-      .replace(/\b(int|void|setup|loop)\b/g, '<span class="keyword">$&</span>') // Mots clés
-      .replace(/\b(pinMode|digitalWrite|delay)\b/g, '<span class="function">$&</span>') // Noms de fonction
-      .replace(/\b\d+\b/g, '<span class="number">$&</span>'); // Nombres
+    const highlightedCode = codeText.replace(/\/\/.*$/gm, match => {
+      return createSpanElement("comment", match).outerHTML;
+    })
+    .replace(/\b(int|void|setup|loop)\b/g, match => {
+      return createSpanElement("keyword", match).outerHTML;
+    })
+    .replace(/\b(pinMode|digitalWrite|delay)\b/g, match => {
+      return createSpanElement("function", match).outerHTML;
+    })
+    .replace(/\b\d+\b/g, match => {
+      return createSpanElement("number", match).outerHTML;
+    });
+
+    codeElement.innerHTML = highlightedCode;
   });
 </script>
 <video width="600" height="400" controls autoplay>
