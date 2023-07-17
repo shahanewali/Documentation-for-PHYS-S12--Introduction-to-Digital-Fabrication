@@ -44,3 +44,25 @@ btn {
 li {
   font-size: 16px; /* Remplacez la valeur par celle souhaitée */
 }
+
+/* style.css */
+
+body {
+  font-family: Montserrat, sans-serif;
+  font-size: 20px;
+  line-height: 1.8;
+  color: black;
+  padding-top: 0;
+}
+
+h3 {
+  background-color: hotpink;
+}
+
+p {
+  font-size: 18px;
+}
+
+.flotte {
+float:right;
+}
