@@ -1109,7 +1109,7 @@ void printAmount(int amount) {
 <p>For example, if 3 coins of 5 cents have fallen into the piggy bank, it must be marked on screen number 2 on the first line 5c(3) and on the second $0.15.</p>
 <p>I hope it's clear, but in any case the pictures will speak for themselves.</p>
 <p>Now, for the code, I first tested it on 2 screens: on the first, the information for the 1-cent and 5-cent coins, and on the second, the overall total.</p>
-<video width="500" height="500" controls autoplay>
+<video width="500" height="700" controls autoplay>
       <source src="codefinal2LCD.mp4" type=video/mp4>
     </video>
 <p>Once that was done, I moved on to my final vision.</p>
@@ -1282,16 +1282,175 @@ void updateLCD() {
 
     </code>
   </pre>
+<video width="500" height="700" controls autoplay>
+      <source src="codefinal3LCD.mp4" type=video/mp4>
+    </video>
+
 <h2>JULY 17 & 18 </h2>
 <h2> Coding</h2>
 <p>I am very happy with all the programming I did but now I have to do OOP.</p>
 <p> I could have coded directly with classes and no delay but this is really something I hate. I learnt Java in my engineering school and I hated it, I am much more comfortable with Python. I guess I wanted to save the worst part for the end.:))</p>
 <p> For my week 7 assigment, I had to work on making a clean code. I didn't work on my final code but on the one that allowed me to display the total amount in the piggy bank on one LCD screen.</p>
 <p> Here is the new code.</p>
+<pre>
+  <code class="language-arduino">
+#include "LiquidCrystal_I2C.h" // Include the library for I2C LCD
+
+LiquidCrystal_I2C lcd(0x27, 16, 2); // Create an instance of the LiquidCrystal_I2C class
+
+enum SensorPin {
+  CAPTEUR_1 = A0, // Analog pin A0
+  CAPTEUR_2 = A1, // Analog pin A1
+  CAPTEUR_3 = A2, // Analog pin A2
+  CAPTEUR_4 = A3, // Analog pin A3
+  CAPTEUR_5 = 9   // Digital pin 9
+};
+
+void updateLCD(); // Function declaration
+
+class CoinCounter {
+private:
+  SensorPin pin; // Sensor pin
+  int value;     // Number of coins detected
+  int total;     // Total value in cents
+  static float totalGlobal; // Total value globally in dollars
+
+public:
+  CoinCounter(SensorPin pin) : pin(pin), value(0), total(0) {} // Constructor
+
+  void init() {
+    pinMode(pin, INPUT); // Set the pin mode as INPUT
+  }
+
+  void update() {
+    static unsigned long lastDebounceTime = 0; // Last debounce time
+    unsigned long currentTime = millis();      // Current time
+    const unsigned long debounceDelay = 500;    // Debounce delay in milliseconds
+
+    // Check if the pin is HIGH and debounce time has passed
+    if (digitalRead(pin) == HIGH && (currentTime - lastDebounceTime) >= debounceDelay) {
+      value++; // Increment the number of coins detected
+      total += getValueInCents();         // Add the value of the coin in cents to the total
+      totalGlobal += getValueInDollars(); // Add the value of the coin in dollars to the global total
+      printTotal(); // Print the current and overall totals
+      updateLCD();  // Update the LCD display
+      lastDebounceTime = currentTime; // Update the last debounce time
+    }
+  }
+
+  int getValue() const {
+    return value; // Return the number of coins detected
+  }
+
+  int getTotal() const {
+    return total; // Return the total value in cents
+  }
+
+  static float getTotalGlobal() {
+    return totalGlobal; // Return the global total value in dollars
+  }
+
+private:
+  int getValueInCents() const {
+    // Return the value of the coin in cents based on the sensor pin
+    switch (pin) {
+      case CAPTEUR_1:
+        return 10;
+      case CAPTEUR_2:
+        return 1;
+      case CAPTEUR_3:
+        return 5;
+      case CAPTEUR_4:
+        return 25;
+      case CAPTEUR_5:
+        return 100;
+      default:
+        return 0;
+    }
+  }
+
+  float getValueInDollars() const {
+    return getValueInCents() / 100.0; // Return the value of the coin in dollars
+  }
+
+  void printTotal() const {
+    // Print the current total for the sensor pin and the overall total
+    Serial.print("Total ");
+    Serial.print(pinToSensorName(pin));
+    Serial.print(": $");
+    Serial.print(total / 100.0, 2); // Print the total value in dollars with 2 decimal places
+    Serial.print(" (");
+    Serial.print(value);
+    Serial.print(" coins)");
+    Serial.println();
+    Serial.print("Overall Total: $");
+    Serial.print(totalGlobal, 2); // Print the overall total value in dollars with 2 decimal places
+    Serial.println();
+  }
+
+  String pinToSensorName(SensorPin pin) const {
+    // Convert the sensor pin to a corresponding sensor name
+    switch (pin) {
+      case CAPTEUR_1:
+        return "1";
+      case CAPTEUR_2:
+        return "2";
+      case CAPTEUR_3:
+        return "3";
+      case CAPTEUR_4:
+        return "4";
+      case CAPTEUR_5:
+        return "5";
+      default:
+        return "";
+    }
+  }
+};
+
+float CoinCounter::totalGlobal = 0.0; // Initialize the static member variable
+
+CoinCounter sensors[] = {
+  CoinCounter(CAPTEUR_1), // Create instances of CoinCounter for each sensor pin
+  CoinCounter(CAPTEUR_2),
+  CoinCounter(CAPTEUR_3),
+  CoinCounter(CAPTEUR_4),
+  CoinCounter(CAPTEUR_5)
+};
+
+void setup() {
+  lcd.init();       // Initialize the LCD
+  lcd.backlight();  // Turn on the LCD backlight
+  Serial.begin(9600); // Initialize the Serial communication
+  for (int i = 0; i < 5; i++) {
+    sensors[i].init(); // Initialize each CoinCounter instance
+  }
+}
+
+void loop() {
+  for (int i = 0; i < 5; i++) {
+    sensors[i].update(); // Update each CoinCounter instance
+  }
+}
+
+void updateLCD() {
+  lcd.clear();            // Clear the LCD display
+  lcd.setCursor(5, 0);    // Set the cursor position
+  lcd.print("Total:");    // Print "Total:" on the first line
+
+  lcd.setCursor(4, 1);    // Set the cursor position
+  lcd.print("$");         // Print "$" on the second line
+  lcd.print(CoinCounter::getTotalGlobal(), 2); // Print the overall total value in dollars with 2 decimal places
+}
+
+    </code>
+  </pre>
 <p> Next step is to work on making a cleaner final code.. Can't wait! </p>
 
 <h2>Building </h2>
 <p> With my final code and my new 3D printed slides, I prototyped my piggy bank.</p>
+<video width="500" height="700" controls autoplay>
+      <source src="test1.0final.mp4" type=video/mp4>
+    </video>
 <p> It worked perfectly so now I need to 3D print the rest of my slides. I am not sure that I will be needing funnels.</p>
 <script src="../strapdown.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" ></script>
