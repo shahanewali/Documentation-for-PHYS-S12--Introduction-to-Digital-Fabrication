@@ -327,13 +327,13 @@ void loop() {
 
     </code>
   </pre>
-<p>For the rest of the code, I just modified the if loops according to the sensor.At this stage I hadn't yet coded the conversion to dollars once you pass 100 cents. so for the if loop on the 1 dolllar sensor I just put + 100 cents on each activation. So my total was only in cents.</p>
-<p>Then I wanted to add local totals for each sensor and have my conversion in dollars. That is, if I press sensor 3 for the 3rd time and I already have 1 dollar in my piggy bank. Then I see in the serial monitor:</p>
+<p>For the rest of the code, I just modified the if loops according to the sensor.At this stage, I hadn't yet coded the conversion to dollars once you pass 100 cents. For the if loop on the 1 dollar sensor I just put + 100 cents on each activation. So my total was only in cents.</p>
+<p>Then, I wanted to add local totals for each sensor and have my conversion in dollars. That is, if I press sensor 3 for the 3rd time and I already have 1 dollar in my piggy bank, I see in the serial monitor:</p>
 <ul> 
   <li>Total 3= 15 cents</li>
   <li>Total= 1 dollar and 5 cents</li>
 </ul>
-<p>I've also added the number of x centime coins inserted next to the local total.</p>
+<p>I've also added the number of x cents coins inserted next to the local total.</p>
 <p> Here is the code.</p> <h3>Important code </h3>
 <pre>
   <code class="language-arduino">
@@ -491,7 +491,7 @@ void printAmount(int amount)
   <p>I'm very happy with this code, now the next step is to succeed in using an output. I'll probably use an LCD screen.</p>
 
 <h2>JULY 13 part 2: LED discovery</h2>
-<p>Yesterday, in class, we learnt about output devices. During the lab, I tried to use OLED screens and then moved on to LCD screens (see Week 7). I wanted my piggy bank totals to be displayed on this screen.</p>
+<p>Yesterday, in class, we learnt about output devices. During the lab, I tried to use OLED screens and then moved on to LCD screens. I wanted my piggy bank totals to be displayed on this screen.</p>
 <p>I began by using the LCD on its own. Here's the wiring I followed:</p>
 <img src="LCDmontageessai1.png" alt="Image" style="width:500px;height:450px;"/>
 <p>I then tried to print things on the LED screen. In particular, I tried printing 1c, 5c, 10c, 25c, $1 and a sigma on the first line, and zeros underneath on the second line. I wanted to see if everything I wanted to display would fit. The answer was no. A 16x2 LCD screen is too small.</p>
@@ -697,8 +697,8 @@ void printAmount(int amount) {
 <h2>JULY 15 </h2>
 <h2>Part1:Coding</h2>
 Yesterday, I realised that it was possible to use I2C LCD screens which are much more easier to connect. This is the circuit.
-<img src="schemacircuit1LCDI2C.png" alt="Image" style="width:300px;height:100px;"/>
-<p>First, I did what I did before to understand how an I2C LCD worked. I had to download the library and look at the different commands.To adjust contrast, you just need to use the potzntiometre on the I2C with a screwdriver. A normal LCN and I2C screen don't initialize the same way for example.<p>
+<img src="schemacircuit1LCDI2C.png" alt="Image" style="width:300px;height:200px;"/>
+<p>First, I did what I did before to understand how an I2C LCD worked. I had to download the library and look at the different commands.To adjust contrast, you just need to use the potentiometer on the I2C with a screwdriver. A normal LCD and I2C screen don't initialize the same way for example.<p>
 <p>I tried this code.</p>
  <pre>
   <code class="language-arduino">
@@ -919,9 +919,8 @@ void loop() {
 <h2>Part 2: Building</h2>
 <p> I printed my first toboggan prototype with the 3D printer after making it with a laser cutter and tested it to see if it worked.</p>
 <img src="toboggan3Dprintedv1.jpg" alt="Image" style="width:400px;height:500px;"/>
-<p>I tested with the code that displays the total on the LCD screen. It works very well. However, I noted that I could make a few modifications to the slide, which I did in fusion 360. I then ran a 3D print again.</p>
-<h2>VIDEO A METTRE DU TEST ABSOLUMENT</h2>
-<img src="toboggan3Dv2.jpg" alt="Image" style="width:500px;height:450px;"/>
+<p>I tested with the code that displays the total on the LCD screen. It works very well.(Video below) However, I noted that I could make a few modifications to the slide, which I did in fusion 360. I then ran a 3D print again.</p>
+<img src="toboggan3Dv2.png" alt="Image" style="width:500px;height:450px;"/>
 <p>I'll continue this " building " part next week.</p>
 
 <h2>JULY 16</h2>
@@ -1110,155 +1109,11 @@ void printAmount(int amount) {
 <p>For example, if 3 coins of 5 cents have fallen into the piggy bank, it must be marked on screen number 2 on the first line 5c(3) and on the second $0.15.</p>
 <p>I hope it's clear, but in any case the pictures will speak for themselves.</p>
 <p>Now, for the code, I first tested it on 2 screens: on the first, the information for the 1-cent and 5-cent coins, and on the second, the overall total.</p>
+<video width="500" height="500" controls autoplay>
+      <source src="codefinal2LCD.mp4" type=video/mp4>
+    </video>
+<p>Once that was done, I moved on to my final vision.</p>
 
- <pre>
-  <code class="language-arduino">
-#include "Wire.h"
-#include "LiquidCrystal_I2C.h"
-
-LiquidCrystal_I2C lcd1(0x27, 16, 2);  // First I2C LCD screen
-LiquidCrystal_I2C lcd2(0x26, 16, 2);  // Second I2C LCD screen
-
-const int sensor1Pin = A0; // Sensor 1, A4 pin
-const int sensor2Pin = A1; // Sensor 2, A2 pin
-const int sensor3Pin = A2; // Sensor 3, A0 pin
-const int sensor4Pin = A3; // Sensor 4, A3 pin
-const int sensor5Pin = 9; // Sensor 5, A5 pin
-
-int total1 = 0; // Total for sensor 1 (10 cents)
-int total2 = 0; // Total for sensor 2 (1 cent)
-int total3 = 0; // Total for sensor 3 (5 cents)
-int total4 = 0; // Total for sensor 4 (25 cents)
-int total5 = 0; // Total for sensor 5 (1 dollar)
-float totalGlobal = 0.0; // Overall total
-
-void setup() {
-  pinMode(sensor1Pin, INPUT); // Set sensor1Pin as input
-  pinMode(sensor2Pin, INPUT); // Set sensor2Pin as input
-  pinMode(sensor3Pin, INPUT); // Set sensor3Pin as input
-  pinMode(sensor4Pin, INPUT); // Set sensor4Pin as input
-  pinMode(sensor5Pin, INPUT); // Set sensor5Pin as input
-  
-  lcd1.init(); // Initialize the first I2C LCD screen
-  lcd1.backlight(); // Turn on the backlight for the first I2C LCD screen
-  
-  lcd2.init(); // Initialize the second I2C LCD screen
-  lcd2.backlight(); // Turn on the backlight for the second I2C LCD screen
-  
-  Serial.begin(9600); // Initialize serial communication at 9600 baud
-}
-
-void loop() {
-  if (digitalRead(sensor1Pin) == HIGH) {
-    total1 += 10;
-    totalGlobal += 0.10;
-    Serial.print("Total 1: $");
-    Serial.print(total1 / 100.0, 2);
-    Serial.print(" (");
-    Serial.print(total1 / 10);
-    Serial.print(" coins)");
-    Serial.println();
-    Serial.print("Overall Total: $");
-    Serial.print(totalGlobal, 2);
-    Serial.println();
-    updateLCD();
-    delay(500); // Wait for 500 milliseconds to debounce
-  }
-
-  if (digitalRead(sensor2Pin) == HIGH) {
-    total2++;
-    totalGlobal += 0.01;
-    Serial.print("Total 2: $");
-    Serial.print(total2 / 100.0, 2);
-    Serial.print(" (");
-    Serial.print(total2);
-    Serial.print(" coins)");
-    Serial.println();
-    Serial.print("Overall Total: $");
-    Serial.print(totalGlobal, 2);
-    Serial.println();
-    updateLCD();
-    delay(500); // Wait for 500 milliseconds to debounce
-  }
-
-  if (digitalRead(sensor3Pin) == HIGH) {
-    total3++;
-    totalGlobal += 0.05;
-    Serial.print("Total 3: $");
-    Serial.print(total3 / 100.0, 2);
-    Serial.print(" (");
-    Serial.print(total3);
-    Serial.print(" coins)");
-    Serial.println();
-    Serial.print("Overall Total: $");
-    Serial.print(totalGlobal, 2);
-    Serial.println();
-    updateLCD();
-    delay(500); // Wait for 500 milliseconds to debounce
-  }
-
-  if (digitalRead(sensor4Pin) == HIGH) {
-    total4 += 25;
-    totalGlobal += 0.25;
-    Serial.print("Total 4: $");
-    Serial.print(total4 / 100.0, 2);
-    Serial.print(" (");
-    Serial.print(total4 / 25);
-    Serial.print(" coins)");
-    Serial.println();
-    Serial.print("Overall Total: $");
-    Serial.print(totalGlobal, 2);
-    Serial.println();
-    updateLCD();
-    delay(500); // Wait for 500 milliseconds to debounce
-  }
-
-  if (digitalRead(sensor5Pin) == HIGH) {
-    total5 += 100;
-    totalGlobal += 1.0;
-    Serial.print("Total 5: $");
-    Serial.print(total5 / 100.0, 2);
-    Serial.print(" (");
-    Serial.print(total5 / 100);
-    Serial.print(" coins)");
-    Serial.println();
-    Serial.print("Overall Total: $");
-    Serial.print(totalGlobal, 2);
-    Serial.println();
-    updateLCD();
-    delay(500); // Wait for 500 milliseconds to debounce
-  }
-}
-
-void updateLCD() {
-  lcd1.clear(); // Clear the first I2C LCD screen
-  lcd1.setCursor(0, 0); // Set the cursor to column 0, row 0
-  lcd1.print("1c(");
-  lcd1.print(total2);
-  lcd1.print(") 5c(");
-  lcd1.print(total3);
-  lcd1.print(")");
-
-  lcd1.setCursor(0, 1); // Set the cursor to column 0, row 1
-  lcd1.print("$");
-  lcd1.print(total2 * 0.01, 2);
-  lcd1.print("  $");
-  lcd1.print(total3 * 0.05, 2);
-  
-  lcd2.clear(); // Clear the second I2C LCD screen
-  lcd2.setCursor(5, 0); // Set the cursor to column 0, row 0
-  lcd2.print("Total:");
-
-  lcd2.setCursor(4, 1); // Set the cursor to column 0, row 1
-  lcd2.print("$");
-  lcd2.print(totalGlobal, 2); // Display the overall total with two decimal places
-}
-
-
-    </code>
-  </pre>
-
-<h2> BLABLABLABLABL</h2>
 <h3>IMPORTANT CODE</h3>
  <pre>
   <code class="language-arduino">
