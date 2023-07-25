@@ -1456,18 +1456,20 @@ void updateLCD() {
 <h2>JULY 19</h2>
 <p> I 3D printed all of my slides. There were a few printing defects, but nothing serious.</p>
 <img src="toboggans3Ddéfaut.jpg" alt="Image" style="width:400px;height:500px;"/>
+<br>
 <a download href='./slide.stl'>Download my STL file</a>
 <br>
 <a download href='./shahane_slide_0.2mm_PLA_MK3S_5h27m.gcode'>Download my gcode file</a>
 
 <h2>JULY 20</h2>
-Today, I printed out the walls that will separate each slide and compartment. I modeled them after the slide sketch.
+<p>Today, I printed out the walls that will separate each slide and compartment. I modeled them after the slide sketch.</p>
 <p>I also spent a good part of the day working to make the code cleaner with classes.
 I also had a new idea to add a new sensor to act as a reset button. It resets everything to 0 when you empty the piggy bank.</p>
+<h3>Important code </h3>
  <pre>
   <code class="language-arduino">
-#include <Wire.h>
-#include <LiquidCrystal_I2C.h>
+#include "Wire.h"
+#include "LiquidCrystal_I2C.h"
 
 const int sensor1Pin = A0; // Sensor 1, connected to A0 pin (10 cents)
 const int sensor2Pin = A1; // Sensor 2, connected to A1 pin (1 cent)
@@ -1719,7 +1721,6 @@ void resetTotals() {
 <img src="prototypefinalfinalproject.jpg" alt="Image" style="width:400px;height:500px;"/>
 <p>I then took measurements to find out how big my box should be.</p>
 <p>Here's a drawing of my piggy bank with dimensions.</p>
-<h2>METTRE PHOTO DESSINS mesure boite</h2>
 <img src="dessinboitedelatirelire.jpg" alt="Image" style="width:500px;height:515px;"/>
 
 
