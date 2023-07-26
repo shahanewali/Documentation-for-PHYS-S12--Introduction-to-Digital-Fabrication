@@ -130,29 +130,28 @@ boolean takeNewPhoto = false;
 #define PCLK_GPIO_NUM     22
 
 const char index_html[] PROGMEM = R"rawliteral(
-/*********
-<!DOCTYPE HTML><html>
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
+&lt;!DOCTYPE HTML&gt;&lt;html&gt;
+&lt;head&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;style&gt;
     body { text-align:center; }
     .vert { margin-bottom: 10%; }
     .hori{ margin-bottom: 0%; }
-  </style>
-</head>
-<body>
-  <div id="container">
-    <h2>ESP32-CAM Last Photo</h2>
-    <p>It might take more than 5 seconds to capture a photo.</p>
-    <p>
-      <button onclick="rotatePhoto();">ROTATE</button>
-      <button onclick="capturePhoto()">CAPTURE PHOTO</button>
-      <button onclick="location.reload();">REFRESH PAGE</button>
-    </p>
-  </div>
-  <div><img src="saved-photo" id="photo" width="70%"></div>
-</body>
-<script>
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div id="container"&gt;
+    &lt;h2&gt;ESP32-CAM Last Photo&lt;/h2&gt;
+    &lt;p&gt;It might take more than 5 seconds to capture a photo.&lt;/p&gt;
+    &lt;p&gt;
+      &lt;button onclick="rotatePhoto();"&gt;ROTATE&lt;/button&gt;
+      &lt;button onclick="capturePhoto()"&gt;CAPTURE PHOTO&lt;/button&gt;
+      &lt;button onclick="location.reload();"&gt;REFRESH PAGE&lt;/button&gt;
+    &lt;/p&gt;
+  &lt;/div&gt;
+  &lt;div&gt;&lt;img src="saved-photo" id="photo" width="70%"&gt;&lt;/div&gt;
+&lt;/body&gt;
+&lt;script&gt;
   var deg = 0;
   function capturePhoto() {
     var xhr = new XMLHttpRequest();
@@ -167,9 +166,8 @@ const char index_html[] PROGMEM = R"rawliteral(
     img.style.transform = "rotate(" + deg + "deg)";
   }
   function isOdd(n) { return Math.abs(n % 2) == 1; }
-</script>
-</html>)rawliteral";
-*********/
+&lt;/script&gt;
+&lt;/html&gt;)rawliteral";
 void setup() {
   // Serial port for debugging purposes
   Serial.begin(115200);
