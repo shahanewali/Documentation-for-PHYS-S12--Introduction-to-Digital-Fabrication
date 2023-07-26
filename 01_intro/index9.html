@@ -130,6 +130,7 @@ boolean takeNewPhoto = false;
 #define PCLK_GPIO_NUM     22
 
 const char index_html[] PROGMEM = R"rawliteral(
+/*********
 <!DOCTYPE HTML><html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -168,7 +169,7 @@ const char index_html[] PROGMEM = R"rawliteral(
   function isOdd(n) { return Math.abs(n % 2) == 1; }
 </script>
 </html>)rawliteral";
-
+*********/
 void setup() {
   // Serial port for debugging purposes
   Serial.begin(115200);
@@ -310,9 +311,9 @@ void capturePhotoSaveSpiffs( void ) {
     </code>
   </pre>
 
-    <video width="600" height="400" controls autoplay>
+  <video width="600" height="400" controls autoplay>
       <source src="cameraalonewebserver.mp4" type=video/mp4>
-    </video>
+  </video>
 
 </xmp>
 </body>
