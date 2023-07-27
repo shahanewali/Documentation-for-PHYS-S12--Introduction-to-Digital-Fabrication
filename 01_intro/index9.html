@@ -205,6 +205,8 @@ void loop() {
  <video width="480" height="848" controls>
       <source src="videobuzzernuit2.mp4" type=video/mp4>
   </video>
+<p>I'm sorry we can't see anything because the quality of the video has been degraded, but I wanted to show that in the serial monitor of the transmitter board there was always delivery success and that the sent data was 0 or 1 depending on whether I pressed the button. For the receiver board, in the serial monitor you can see whether the button is pressed or not.</p>
+  <br>
 <p>On my own, I managed to get the camera working by following a tutorial which enabled me to set up a website with a button to take a photo instanly with the camera and then display it on the website.</p>
 <a href="https://randomnerdtutorials.com/esp32-cam-take-photo-display-web-server/">Link to the tutorial</a>
 <pre>
@@ -451,7 +453,7 @@ void capturePhotoSaveSpiffs( void ) {
 
 <p>With this code working for the camera, I wanted to modify the previous code with the buzzer that lights up so that when I press the button connected to the transmitting board, the buzzer on the receiving terminal lights up AND the camera takes a photo that is displayed on a web server.</p>
 <p>I managed to get everything to work more or less even though I think there was an error in the code or communication since the camera and buzzer didn't always light up when I pressed the button and the transmitter board indicated "delivery fail" even when it was working. Since I couldn't solve the problem, I'll just put a video of when it worked.</p>
-  <video width="500" height="400" controls>
+  <video width="480" height="848" controls>
       <source src="buzzerandcameronon.mp4" type=video/mp4>
   </video>
 
