@@ -68,7 +68,143 @@ Then, Loni modified the basic code on the ESP Now radio site so that the piezzo 
 <h2> verif avec Loni plus emander le code</h2>
 <p>Then I added a button linked to the emitting board. I used a XIAO for this and even the simple test of having a button to turn on an LED took a long time. I could make a code like the one on arduino "blink". However, as soon as I added a button it didn't work. The XIAO then stopped working. It was really frustrating. I finally got it to work with an ESP32C3 board.</p>
 <p>I modified the code so that the emitting board sends 0 or 1 to the receiving board depending on whether the button is pressed or not. Depending on whether the receiving board receives 0 or 1, the piezzo buzzer lights up or not.</p>
-<h2> check avec loni mettre les codes que j'ai avec des commentaires PLUS ajouter video</h2>
+<p>This is the code for the emitting board.</p>
+<pre>
+  <code class="language-arduino">
+#define BUTTON_PIN 6 // GPIO21 pin connected to the button
+
+#include "esp_now.h"
+#include "WiFi.h"
+
+// REPLACE WITH THE MAC Address of your receiver
+uint8_t broadcastAddress[] =  {0x30, 0xC6, 0xF7, 0x51, 0x43, 0xE0};
+
+// Callback function to handle the result of the data sending process
+void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
+  Serial.print("\r\nLast Packet Send Status:\t");
+  Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
+}
+
+void setup() {
+  Serial.begin(115200); // Initialize the serial communication for debugging
+  pinMode(BUTTON_PIN, INPUT_PULLUP); // Set the button pin as an input with a pull-up resistor
+
+  WiFi.mode(WIFI_AP_STA); // Set the WiFi mode to access point + station
+
+  if (esp_now_init() != ESP_OK) {
+    Serial.println("Error initializing ESP-NOW");
+    return;
+  }
+
+  // Configure the ESP-NOW peer information
+  esp_now_peer_info_t peerInfo;
+  memset(&peerInfo, 0, sizeof(peerInfo));
+  memcpy(peerInfo.peer_addr, broadcastAddress, 6); // Set the receiver's MAC address
+  peerInfo.channel = 0; // Set the communication channel (0 to 13)
+  peerInfo.encrypt = false; // Disable data encryption
+
+  if (esp_now_add_peer(&peerInfo) != ESP_OK) { // Add the receiver as a peer to ESP-NOW
+    Serial.println("Failed to add peer");
+    return;
+  }
+
+  esp_now_register_send_cb(OnDataSent); // Register the callback for data sending
+}
+
+void loop() {
+  int buttonState = digitalRead(BUTTON_PIN); // Read the state of the button
+  byte dataToSend = (buttonState == LOW) ? 1 : 0; // Convert button state to 1 or 0
+
+  esp_err_t result = esp_now_send(broadcastAddress, &dataToSend, sizeof(dataToSend)); // Send data to the receiver
+
+  if (result == ESP_OK) {
+    Serial.print("Sent data: ");
+    Serial.println(dataToSend); // Print the data sent (1 or 0) to the serial monitor
+  } else {
+    Serial.println("Error sending the data"); // Print an error message if data sending fails
+  }
+
+  delay(1000); // Wait for one second before sending the next data packet
+}
+
+    </code>
+  </pre>
+<p>This is the code for the receiving board.</p>
+  <pre>
+  <code class="language-arduino">
+#include "esp_now.h"
+#include "WiFi.h"
+
+// REPLACE WITH THE MAC Address of your emitter
+uint8_t broadcastAddress[] =  {0x68, 0x67, 0x25, 0x4E, 0x26, 0xC8};
+
+#define BUZZER_PIN 4 // Connect the buzzer control pin to GPIO2 (D2)
+
+bool isBuzzerOn = false; // Variable to keep track of buzzer state
+
+// Callback function to handle received data via ESP-NOW
+void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
+  byte incomingByte;
+  memcpy(&incomingByte, incomingData, sizeof(incomingByte));
+  Serial.print("Bytes received: ");
+  Serial.println(len);
+
+  // Perform actions based on the received data (0 or 1)
+  if (incomingByte == 0) {
+    Serial.println("Button Not Pressed!");
+    if (isBuzzerOn) {
+      noTone(BUZZER_PIN); // Turn off the buzzer
+      isBuzzerOn = false;
+    }
+  } else if (incomingByte == 1) {
+    Serial.println("Button Pressed!");
+    if (!isBuzzerOn) {
+      tone(BUZZER_PIN, 1000); // Turn on the buzzer with a frequency of 1000 Hz
+      isBuzzerOn = true;
+    }
+  }
+}
+
+void setup() {
+  Serial.begin(115200); // Initialize the serial communication for debugging
+
+  pinMode(BUZZER_PIN, OUTPUT); // Set the buzzer pin as an output
+  digitalWrite(BUZZER_PIN, LOW); // Turn off the buzzer initially
+
+  WiFi.mode(WIFI_AP_STA); // Set the WiFi mode to access point + station
+
+  if (esp_now_init() != ESP_OK) {
+    Serial.println("Error initializing ESP-NOW");
+    return;
+  }
+
+  // Configure the ESP-NOW peer information
+  esp_now_peer_info_t peerInfo;
+  memset(&peerInfo, 0, sizeof(peerInfo));
+  memcpy(peerInfo.peer_addr, broadcastAddress, 6); // Set the peer MAC address
+  peerInfo.channel = 0; // Set the communication channel (0 to 13)
+  peerInfo.encrypt = false; // Disable data encryption
+
+  if (esp_now_add_peer(&peerInfo) != ESP_OK) { // Add the peer to ESP-NOW
+    Serial.println("Failed to add peer");
+    return;
+  }
+
+  esp_now_register_recv_cb(OnDataRecv); // Register the callback for data reception
+}
+
+void loop() {
+  // Nothing to do here since data handling is done in the callback function
+}
+
+    </code>
+  </pre>
+ <video width="500" height="400" controls>
+      <source src="videobuzzernuit1.mp4" type=video/mp4>
+  </video>
+ <video width="500" height="400" controls>
+      <source src="videobuzzernuit2.mp4" type=video/mp4>
+  </video>
 <p>On my own, I managed to get the camera working by following a tutorial which enabled me to set up a website with a button to take a photo instanly with the camera and then display it on the website.</p>
 <a href="https://randomnerdtutorials.com/esp32-cam-take-photo-display-web-server/">Link to the tutorial</a>
 <pre>
@@ -312,6 +448,13 @@ void capturePhotoSaveSpiffs( void ) {
   <video width="500" height="400" controls autoplay>
       <source src="cameraalonewebserver.mp4" type=video/mp4>
   </video>
+
+<p>With this code working for the camera, I wanted to modify the previous code with the buzzer that lights up so that when I press the button connected to the transmitting board, the buzzer on the receiving terminal lights up AND the camera takes a photo that is displayed on a web server.</p>
+<p>I managed to get everything to work more or less even though I think there was an error in the code or communication since the camera and buzzer didn't always light up when I pressed the button and the transmitter board indicated "delivery fail" even when it was working. Since I couldn't solve the problem, I'll just put a video of when it worked.</p>
+  <video width="500" height="400" controls>
+      <source src="buzzerandcameronon.mp4" type=video/mp4>
+  </video>
+
 
   
 
