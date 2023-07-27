@@ -213,7 +213,7 @@ void loop() {
 <p>I also thought of making funnels to make sure that the parts reached the sensors. I 3D printed a prototype.everything works fine with the funnel, ramp and sensors. Having said that, maybe I can improve the funnels so that they fit better around the part that's going to sort the money.</p>
 <img src="funnelprototypev1fusion360.png" alt="Image" style="width:400px;height:400px;"/>
 <img src="photoprototype1funnel.jpg" alt="Image" style="width:400px;height:350px;"/>
-<img src="protopypev1finalproject.jpg" alt="Image" style="width:300px;height:600px;"/>
+<img src="protopypev1finalproject.jpg" alt="Image" style="width:400px;height:600px;"/>
 
 <video width="300" height="600" controls>
       <source src="protopypev1videofinalproject.mp4" type=video/mp4>
@@ -275,7 +275,7 @@ void loop() {
 
     </code>
   </pre>
-<video width="600" height="400" controls autoplay>
+<video width="300" height="600" controls>
       <source src="videocodedetectagesansdisplayfinalproject.mp4" type=video/mp4>
     </video>
 
@@ -485,7 +485,7 @@ void printAmount(int amount)
 }
     </code>
   </pre>
-<video width="600" height="400" controls autoplay>
+<video width="300" height="600" controls>
       <source src="videocodeparfaitsansdisplayfinalproject.mp4" type=video/mp4>
     </video>
   <p>I'm very happy with this code, now the next step is to succeed in using an output. I'll probably use an LCD screen.</p>
@@ -690,7 +690,7 @@ void printAmount(int amount) {
 
     </code>
   </pre>
-<video width="600" height="400" controls autoplay>
+<video width="300" height="600" controls>
       <source src="codeparfait1enaction.mp4" type=video/mp4>
     </video>
 
@@ -879,8 +879,8 @@ void printAmount(int amount) {
 <p>I checked if it worked with this code.</p>
  <pre>
   <code class="language-arduino">
-#include <Wire.h>
-#include <LiquidCrystal_I2C.h>
+#include "Wire.h"
+#include "LiquidCrystal_I2C.h"
 
 LiquidCrystal_I2C lcd1(0x27, 16, 2);  // LCD I2C display
 LiquidCrystal_I2C lcd2(0x26, 16, 2);  // Second I2C LCD display
@@ -927,8 +927,8 @@ void loop() {
 <p>Today, I continued to work on my code. I modified the function that displayed my total on an LCD screen to display it on my 3 screens. I had to modify my LCD update function and also change my set-ups.</p>
  <pre>
   <code class="language-arduino">
-#include <Wire.h>
-#include <LiquidCrystal_I2C.h>
+#include "Wire.h"
+#include "LiquidCrystal_I2C.h"
 
 LiquidCrystal_I2C lcd1(0x27, 16, 2);
 LiquidCrystal_I2C lcd2(0x26, 16, 2);
@@ -1097,7 +1097,7 @@ void printAmount(int amount) {
 }
     </code>
   </pre>
-<video width="300" height="500" controls autoplay>
+<video width="300" height="600" controls>
       <source src="video3totaux3lcd.mp4" type=video/mp4>
     </video>
 <p> Now, I will explain the vision that I have for my 3 LCDs. I want to display the same thing as my serial monitor. I.e. the total in dollars of 1 cent coins, 5 cent coins etc. as well as the number of coins that have been put in. Of course, I also want the total of all coins. Given that I want a lot of information displayed and that I have a limited number of slots, I need to use 3 LCD screens.</p>
@@ -1109,7 +1109,7 @@ void printAmount(int amount) {
 <p>For example, if 3 coins of 5 cents have fallen into the piggy bank, it must be marked on screen number 2 on the first line 5c(3) and on the second $0.15.</p>
 <p>I hope it's clear, but in any case the pictures will speak for themselves.</p>
 <p>Now, for the code, I first tested it on 2 screens: on the first, the information for the 1-cent and 5-cent coins, and on the second, the overall total.</p>
-<video width="500" height="700" controls autoplay>
+<video width="300" height="600" controls >
       <source src="codefinal2LCD.mp4" type=video/mp4>
     </video>
 <p>Once that was done, I moved on to my final vision.</p>
@@ -1117,8 +1117,8 @@ void printAmount(int amount) {
 <h3>IMPORTANT CODE</h3>
  <pre>
   <code class="language-arduino">
-#include <Wire.h>
-#include <LiquidCrystal_I2C.h>
+#include "Wire.h"
+#include "LiquidCrystal_I2C.h"
 
 LiquidCrystal_I2C lcd1(0x27, 16, 2);  // First I2C LCD screen
 LiquidCrystal_I2C lcd2(0x26, 16, 2);  // Second I2C LCD screen
@@ -1282,7 +1282,7 @@ void updateLCD() {
 
     </code>
   </pre>
-<video width="500" height="700" controls autoplay>
+<video width="300" height="600" controls>
       <source src="codefinal3LCD.mp4" type=video/mp4>
     </video>
 
