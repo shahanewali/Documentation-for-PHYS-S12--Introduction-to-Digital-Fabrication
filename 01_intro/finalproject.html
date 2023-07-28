@@ -711,117 +711,128 @@ void loop() {
 <h3>Important code</h3>
  <pre>
   <code class="language-arduino">
+
 #include "LiquidCrystal_I2C.h"
 
-LiquidCrystal_I2C lcd(0x27, 16, 2);
+LiquidCrystal_I2C lcd(0x27, 16, 2); // Initialize the I2C LCD display with address 0x27, 16 columns, and 2 rows
 
-const int capteur1Pin = A0; // Sensor 1, A0 pin
-const int capteur2Pin = A1; // Sensor 2, A1 pin
-const int capteur3Pin = A2; // Sensor 3, A2 pin
-const int capteur4Pin = A3; // Sensor 4, A3 pin
-const int capteur5Pin = 9; // Sensor 5, A5 pin
+const int sensor1Pin = A0; // Sensor 1, A4 pin
+const int sensor2Pin = A1; // Sensor 2, A2 pin
+const int sensor3Pin = A2; // Sensor 3, A0 pin
+const int sensor4Pin = A3; // Sensor 4, A3 pin
+const int sensor5Pin = 9; // Sensor 5, A5 pin
 
-float total1 = 0.0; // Total for sensor 1 (10 cents)
-float total2 = 0.0; // Total for sensor 2 (1 cent)
-float total3 = 0.0; // Total for sensor 3 (5 cents)
-float total4 = 0.0; // Total for sensor 4 (25 cents)
-float total5 = 0.0; // Total for sensor 5 (1 dollar)
-float totalGlobal = 0.0; // Global total
+int total1 = 0; // Total for Sensor 1 (10 cents)
+int total2 = 0; // Total for Sensor 2 (1 cent)
+int total3 = 0; // Total for Sensor 3 (5 cents)
+int total4 = 0; // Total for Sensor 4 (25 cents)
+int total5 = 0; // Total for Sensor 5 (1 dollar)
+float totalGlobal = 0.0; // Overall total
 
 void setup() {
-  pinMode(capteur1Pin, INPUT); // Set sensor1Pin as input
-  pinMode(capteur2Pin, INPUT); // Set sensor2Pin as input
-  pinMode(capteur3Pin, INPUT); // Set sensor3Pin as input
-  pinMode(capteur4Pin, INPUT); // Set sensor4Pin as input
-  pinMode(capteur5Pin, INPUT); // Set sensor5Pin as input
+  pinMode(sensor1Pin, INPUT); // Set sensor1Pin as input
+  pinMode(sensor2Pin, INPUT); // Set sensor2Pin as input
+  pinMode(sensor3Pin, INPUT); // Set sensor3Pin as input
+  pinMode(sensor4Pin, INPUT); // Set sensor4Pin as input
+  pinMode(sensor5Pin, INPUT); // Set sensor5Pin as input
+
   lcd.init(); // Initialize the I2C LCD screen
   lcd.backlight(); // Turn on the I2C LCD backlight
   Serial.begin(9600); // Initialize serial communication at 9600 baud
 }
 
 void loop() {
-  if (digitalRead(capteur1Pin) == HIGH) {
-    total1 += 0.10;
-    totalGlobal += 0.10;
+  // Check if Sensor 1 is triggered
+  if (digitalRead(sensor1Pin) == HIGH) {
+    total1 += 10; // Increment total for Sensor 1 by 10 cents
+    totalGlobal += 0.10; // Increment overall total by 10 cents
     Serial.print("Total 1: $");
-    Serial.print(total1, 2);
+    Serial.print(total1 / 100.0, 2);
     Serial.print(" (");
-    Serial.print(total1 / 0.10); // Display the number of coins for 10 cents
-    Serial.println(" coins)"); // Automatically adds a new line here for " coins)"
+    Serial.print(total1 / 10);
+    Serial.println(" coins)");
     Serial.print("Overall Total: $");
-    Serial.println(totalGlobal, 2); // Automatically adds a new line here for the global total
-    updateLCD();
-    delay(500); 
+    Serial.println(totalGlobal, 2);
+    updateLCD(); // Update the LCD display
+    delay(500); // Wait for 500 milliseconds to debounce
   }
 
-  if (digitalRead(capteur2Pin) == HIGH) {
-    total2 += 0.01;
-    totalGlobal += 0.01;
+  // Check if Sensor 2 is triggered
+  if (digitalRead(sensor2Pin) == HIGH) {
+    total2 += 1; // Increment total for Sensor 2 by 1 cent
+    totalGlobal += 0.01; // Increment overall total by 1 cent
     Serial.print("Total 2: $");
-    Serial.print(total2, 2);
+    Serial.print(total2 / 100.0, 2);
     Serial.print(" (");
-    Serial.print(total2 / 0.01); // Display the number of coins for 1 cent
-    Serial.println(" coins)"); // Automatically adds a new line here for " coins)"
+    Serial.print(total2);
+    Serial.println(" coins)");
     Serial.print("Overall Total: $");
-    Serial.println(totalGlobal, 2); // Automatically adds a new line here for the global total
-    updateLCD();
-    delay(500); 
+    Serial.println(totalGlobal, 2);
+    updateLCD(); // Update the LCD display
+    delay(500); // Wait for 500 milliseconds to debounce
   }
 
-  if (digitalRead(capteur3Pin) == HIGH) {
-    total3 += 0.05;
-    totalGlobal += 0.05;
+  // Check if Sensor 3 is triggered
+  if (digitalRead(sensor3Pin) == HIGH) {
+    total3 += 5; // Increment total for Sensor 3 by 5 cents
+    totalGlobal += 0.05; // Increment overall total by 5 cents
     Serial.print("Total 3: $");
-    Serial.print(total3, 2);
+    Serial.print(total3 / 100.0, 2);
     Serial.print(" (");
-    Serial.print(total3 / 0.05); // Display the number of coins for 5 cents
-    Serial.println(" coins)"); // Automatically adds a new line here for " coins)"
+    Serial.print(total3 / 5);
+    Serial.println(" coins)");
     Serial.print("Overall Total: $");
-    Serial.println(totalGlobal, 2); // Automatically adds a new line here for the global total
-    updateLCD();
-    delay(500); 
+    Serial.println(totalGlobal, 2);
+    updateLCD(); // Update the LCD display
+    delay(500); // Wait for 500 milliseconds to debounce
   }
 
-  if (digitalRead(capteur4Pin) == HIGH) {
-    total4 += 0.25;
-    totalGlobal += 0.25;
+  // Check if Sensor 4 is triggered
+  if (digitalRead(sensor4Pin) == HIGH) {
+    total4 += 25; // Increment total for Sensor 4 by 25 cents
+    totalGlobal += 0.25; // Increment overall total by 25 cents
     Serial.print("Total 4: $");
-    Serial.print(total4, 2);
+    Serial.print(total4 / 100.0, 2);
     Serial.print(" (");
-    Serial.print(total4 / 0.25); // Display the number of coins for 25 cents
-    Serial.println(" coins)"); // Automatically adds a new line here for " coins)"
+    Serial.print(total4 / 25);
+    Serial.println(" coins)");
     Serial.print("Overall Total: $");
-    Serial.println(totalGlobal, 2); // Automatically adds a new line here for the global total
-    updateLCD();
-    delay(500); 
+    Serial.println(totalGlobal, 2);
+    updateLCD(); // Update the LCD display
+    delay(500); // Wait for 500 milliseconds to debounce
   }
 
-  if (digitalRead(capteur5Pin) == HIGH) {
-    total5 += 1.0;
-    totalGlobal += 1.0;
+  // Check if Sensor 5 is triggered
+  if (digitalRead(sensor5Pin) == HIGH) {
+    total5 += 100; // Increment total for Sensor 5 by 1 dollar
+    totalGlobal += 1.0; // Increment overall total by 1 dollar
     Serial.print("Total 5: $");
-    Serial.print(total5, 2);
+    Serial.print(total5 / 100.0, 2);
     Serial.print(" (");
-    Serial.print(total5); // Display the number of coins for 1 dollar
-    Serial.println(" coins)"); // Automatically adds a new line here for " coins)"
+    Serial.print(total5 / 100);
+    Serial.println(" coins)");
     Serial.print("Overall Total: $");
-    Serial.println(totalGlobal, 2); // Automatically adds a new line here for the global total
-    updateLCD();
-    delay(500); 
+    Serial.println(totalGlobal, 2);
+    updateLCD(); // Update the LCD display
+    delay(500); // Wait for 500 milliseconds to debounce
   }
 }
 
 void updateLCD() {
-  lcd.clear(); // Clear the LCD screen
-  lcd.setCursor(5, 0); // Set the cursor position to column 5, row 0
+  lcd.clear(); // Clear the I2C LCD screen
+  lcd.setCursor(5, 0); // Set the cursor to column 5, line 0
   lcd.print("Total:");
 
-  lcd.setCursor(4, 1); // Set the cursor position to column 4, row 1
+  lcd.setCursor(4, 1); // Set the cursor to column 4, line 1
   lcd.print("$");
-  lcd.print(totalGlobal, 2); // Display the global total with 2 decimal places
+  int cents = (int)(totalGlobal * 100); // Convert the total to cents as an integer
+  lcd.print(cents / 100); // Display the dollar part of the total
+  lcd.print(".");
+  if ((cents % 100) < 10) {
+    lcd.print("0");
+  }
+  lcd.print(cents % 100); // Display the cents part of the total
 }
-
-
     </code>
   </pre>
 <p>I also I learnt that I could use multiple I2C LCDs at the same time which will be useful to display all the informations. In order to use multiple I2C LCD, it is necessary to change the I2C adress.
@@ -886,134 +897,173 @@ void loop() {
 #include "Wire.h"
 #include "LiquidCrystal_I2C.h"
 
+// Initialize three LCD displays with their respective addresses, 16 columns, and 2 rows
 LiquidCrystal_I2C lcd1(0x27, 16, 2);
 LiquidCrystal_I2C lcd2(0x26, 16, 2);
 LiquidCrystal_I2C lcd3(0x23, 16, 2);
 
-const int capteur1Pin = A0; // Sensor 1, A0 pin
-const int capteur2Pin = A1; // Sensor 2, A1 pin
-const int capteur3Pin = A2; // Sensor 3, A2 pin
-const int capteur4Pin = A3; // Sensor 4, A3 pin
-const int capteur5Pin = 9;  // Sensor 5, A5 pin
+// Define analog input pins for five sensors and variables to hold their total counts
+const int sensor1Pin = A0;
+const int sensor2Pin = A1;
+const int sensor3Pin = A2;
+const int sensor4Pin = A3;
+const int sensor5Pin = 9;
 
-float total1 = 0.0; // Total for sensor 1 (10 cents)
-float total2 = 0.0; // Total for sensor 2 (1 cent)
-float total3 = 0.0; // Total for sensor 3 (5 cents)
-float total4 = 0.0; // Total for sensor 4 (25 cents)
-float total5 = 0.0; // Total for sensor 5 (1 dollar)
-float totalGlobal = 0.0; // Global total
+int total1 = 0;
+int total2 = 0;
+int total3 = 0;
+int total4 = 0;
+int total5 = 0;
+float totalGlobal = 0.0; // Variable to hold the overall total
 
 void setup() {
-  pinMode(capteur1Pin, INPUT); // Set sensor1Pin as input
-  pinMode(capteur2Pin, INPUT); // Set sensor2Pin as input
-  pinMode(capteur3Pin, INPUT); // Set sensor3Pin as input
-  pinMode(capteur4Pin, INPUT); // Set sensor4Pin as input
-  pinMode(capteur5Pin, INPUT); // Set sensor5Pin as input
-  lcd1.init(); // Initialize the I2C LCD1 screen
-  lcd1.backlight(); // Turn on the I2C LCD1 backlight
-  lcd2.init(); // Initialize the I2C LCD2 screen
-  lcd2.backlight(); // Turn on the I2C LCD2 backlight
-  lcd3.init(); // Initialize the I2C LCD3 screen
-  lcd3.backlight(); // Turn on the I2C LCD3 backlight
-  Serial.begin(9600); // Initialize serial communication at 9600 baud
+  // Set the sensor pins as inputs
+  pinMode(sensor1Pin, INPUT);
+  pinMode(sensor2Pin, INPUT);
+  pinMode(sensor3Pin, INPUT);
+  pinMode(sensor4Pin, INPUT);
+  pinMode(sensor5Pin, INPUT);
+
+  // Initialize and enable backlight for all three LCD displays
+  lcd1.init();
+  lcd1.backlight();
+  lcd2.init();
+  lcd2.backlight();
+  lcd3.init();
+  lcd3.backlight();
+
+  // Start serial communication for debugging (baud rate: 9600)
+  Serial.begin(9600);
 }
 
 void loop() {
-  if (digitalRead(capteur1Pin) == HIGH) {
-    total1 += 0.10;
-    totalGlobal += 0.10;
+  // Check if sensor1 is triggered
+  if (digitalRead(sensor1Pin) == HIGH) {
+    total1 += 10; // Increment total count for sensor1 by 10
+    totalGlobal += 0.10; // Increment overall total by 0.10
+    // Print sensor1's total count and overall total to the Serial Monitor
     Serial.print("Total 1: $");
-    Serial.print(total1, 2);
+    Serial.print(total1 / 100.0, 2);
     Serial.print(" (");
-    Serial.print(total1 / 0.10); // Display the number of coins for 10 cents
-    Serial.println(" coins)"); // Automatically adds a new line here for " coins)"
+    Serial.print(total1 / 10);
+    Serial.println(" coins)");
     Serial.print("Overall Total: $");
-    Serial.println(totalGlobal, 2); // Automatically adds a new line here for the global total
+    Serial.println(totalGlobal, 2);
+    // Update all three LCD displays with the latest values
     updateLCD();
-    delay(500); 
+    delay(500); // Delay to avoid rapid multiple counts for the same event
   }
 
-  if (digitalRead(capteur2Pin) == HIGH) {
-    total2 += 0.01;
-    totalGlobal += 0.01;
+  // Check if sensor2 is triggered
+  if (digitalRead(sensor2Pin) == HIGH) {
+    total2 += 1; // Increment total count for sensor2 by 1
+    totalGlobal += 0.01; // Increment overall total by 0.01
+    // Print sensor2's total count and overall total to the Serial Monitor
     Serial.print("Total 2: $");
-    Serial.print(total2, 2);
+    Serial.print(total2 / 100.0, 2);
     Serial.print(" (");
-    Serial.print(total2 / 0.01); // Display the number of coins for 1 cent
-    Serial.println(" coins)"); // Automatically adds a new line here for " coins)"
+    Serial.print(total2);
+    Serial.println(" coins)");
     Serial.print("Overall Total: $");
-    Serial.println(totalGlobal, 2); // Automatically adds a new line here for the global total
+    Serial.println(totalGlobal, 2);
+    // Update all three LCD displays with the latest values
     updateLCD();
-    delay(500); 
+    delay(500); // Delay to avoid rapid multiple counts for the same event
   }
 
-  if (digitalRead(capteur3Pin) == HIGH) {
-    total3 += 0.05;
-    totalGlobal += 0.05;
+  // Check if sensor3 is triggered
+  if (digitalRead(sensor3Pin) == HIGH) {
+    total3 += 5; // Increment total count for sensor3 by 5
+    totalGlobal += 0.05; // Increment overall total by 0.05
+    // Print sensor3's total count and overall total to the Serial Monitor
     Serial.print("Total 3: $");
-    Serial.print(total3, 2);
+    Serial.print(total3 / 100.0, 2);
     Serial.print(" (");
-    Serial.print(total3 / 0.05); // Display the number of coins for 5 cents
-    Serial.println(" coins)"); // Automatically adds a new line here for " coins)"
+    Serial.print(total3 / 5);
+    Serial.println(" coins)");
     Serial.print("Overall Total: $");
-    Serial.println(totalGlobal, 2); // Automatically adds a new line here for the global total
+    Serial.println(totalGlobal, 2);
+    // Update all three LCD displays with the latest values
     updateLCD();
-    delay(500); 
+    delay(500); // Delay to avoid rapid multiple counts for the same event
   }
 
-  if (digitalRead(capteur4Pin) == HIGH) {
-    total4 += 0.25;
-    totalGlobal += 0.25;
+  // Check if sensor4 is triggered
+  if (digitalRead(sensor4Pin) == HIGH) {
+    total4 += 25; // Increment total count for sensor4 by 25
+    totalGlobal += 0.25; // Increment overall total by 0.25
+    // Print sensor4's total count and overall total to the Serial Monitor
     Serial.print("Total 4: $");
-    Serial.print(total4, 2);
+    Serial.print(total4 / 100.0, 2);
     Serial.print(" (");
-    Serial.print(total4 / 0.25); // Display the number of coins for 25 cents
-    Serial.println(" coins)"); // Automatically adds a new line here for " coins)"
+    Serial.print(total4 / 25);
+    Serial.println(" coins)");
     Serial.print("Overall Total: $");
-    Serial.println(totalGlobal, 2); // Automatically adds a new line here for the global total
+    Serial.println(totalGlobal, 2);
+    // Update all three LCD displays with the latest values
     updateLCD();
-    delay(500);
+    delay(500); // Delay to avoid rapid multiple counts for the same event
   }
 
-  if (digitalRead(capteur5Pin) == HIGH) {
-    total5 += 1.0;
-    totalGlobal += 1.0;
+  // Check if sensor5 is triggered
+  if (digitalRead(sensor5Pin) == HIGH) {
+    total5 += 100; // Increment total count for sensor5 by 100
+    totalGlobal += 1.0; // Increment overall total by 1.0
+    // Print sensor5's total count and overall total to the Serial Monitor
     Serial.print("Total 5: $");
-    Serial.print(total5, 2);
+    Serial.print(total5 / 100.0, 2);
     Serial.print(" (");
-    Serial.print(total5); // Display the number of coins for 1 dollar
-    Serial.println(" coins)"); // Automatically adds a new line here for " coins)"
+    Serial.print(total5 / 100);
+    Serial.println(" coins)");
     Serial.print("Overall Total: $");
-    Serial.println(totalGlobal, 2); // Automatically adds a new line here for the global total
+    Serial.println(totalGlobal, 2);
+    // Update all three LCD displays with the latest values
     updateLCD();
-    delay(500); 
+    delay(500); // Delay to avoid rapid multiple counts for the same event
   }
 }
 
+// Function to update the content on all three LCD displays
 void updateLCD() {
-  lcd1.clear(); // Clear the LCD1 screen
-  lcd1.setCursor(5, 0); // Set the cursor position to column 5, row 0
+  lcd1.clear();
+  lcd1.setCursor(5, 0);
   lcd1.print("Total:");
 
-  lcd1.setCursor(4, 1); // Set the cursor position to column 4, row 1
+  lcd1.setCursor(4, 1);
   lcd1.print("$");
-  lcd1.print(totalGlobal, 2); // Display the global total with 2 decimal places
+  int cents = totalGlobal * 100;
+  lcd1.print(cents / 100);
+  lcd1.print(".");
+  if ((cents % 100) < 10) {
+    lcd1.print("0");
+  }
+  lcd1.print(cents % 100);
 
-  lcd2.clear(); // Clear the LCD2 screen
-  lcd2.setCursor(5, 0); // Set the cursor position to column 5, row 0
+  lcd2.clear();
+  lcd2.setCursor(5, 0);
   lcd2.print("Total:");
 
-  lcd2.setCursor(4, 1); // Set the cursor position to column 4, row 1
+  lcd2.setCursor(4, 1);
   lcd2.print("$");
-  lcd2.print(totalGlobal, 2); // Display the global total with 2 decimal places
+  lcd2.print(cents / 100);
+  lcd2.print(".");
+  if ((cents % 100) < 10) {
+    lcd2.print("0");
+  }
+  lcd2.print(cents % 100);
 
-  lcd3.clear(); // Clear the LCD3 screen
-  lcd3.setCursor(5, 0); // Set the cursor position to column 5, row 0
+  lcd3.clear();
+  lcd3.setCursor(5, 0);
   lcd3.print("Total:");
 
-  lcd3.setCursor(4, 1); // Set the cursor position to column 4, row 1
+  lcd3.setCursor(4, 1);
   lcd3.print("$");
-  lcd3.print(totalGlobal, 2); // Display the global total with 2 decimal places
+  lcd3.print(cents / 100);
+  lcd3.print(".");
+  if ((cents % 100) < 10) {
+    lcd3.print("0");
+  }
+  lcd3.print(cents % 100);
 }
 
 
@@ -1052,11 +1102,11 @@ const int sensor3Pin = A2; // Sensor 3, connected to A2 pin
 const int sensor4Pin = A3; // Sensor 4, connected to A3 pin
 const int sensor5Pin = 9;  // Sensor 5, connected to digital pin 9
 
-float total1 = 0.0; // Total for sensor 1 (10 cents)
-float total2 = 0.0; // Total for sensor 2 (1 cent)
-float total3 = 0.0; // Total for sensor 3 (5 cents)
-float total4 = 0.0; // Total for sensor 4 (25 cents)
-float total5 = 0.0; // Total for sensor 5 (1 dollar)
+int total1 = 0; // Total for sensor 1 (10 cents)
+int total2 = 0; // Total for sensor 2 (1 cent)
+int total3 = 0; // Total for sensor 3 (5 cents)
+int total4 = 0; // Total for sensor 4 (25 cents)
+int total5 = 0; // Total for sensor 5 (1 dollar)
 float totalGlobal = 0.0; // Overall total
 
 void setup() {
@@ -1068,10 +1118,8 @@ void setup() {
 
   lcd1.init(); // Initialize the first I2C LCD screen
   lcd1.backlight(); // Turn on the backlight of the first I2C LCD screen
-
   lcd2.init(); // Initialize the second I2C LCD screen
   lcd2.backlight(); // Turn on the backlight of the second I2C LCD screen
-
   lcd3.init(); // Initialize the third I2C LCD screen
   lcd3.backlight(); // Turn on the backlight of the third I2C LCD screen
 
@@ -1079,121 +1127,134 @@ void setup() {
 }
 
 void loop() {
+  // Check if sensor 1 is triggered (10 cents)
   if (digitalRead(sensor1Pin) == HIGH) {
-    total1 += 0.10;
-    totalGlobal += 0.10;
+    total1++; // Increment the number of 10-cent coins
+    totalGlobal += 0.10; // Add 0.10 to the overall total
     Serial.print("Total 1: $");
-    Serial.print(total1, 2);
+    Serial.print(total1 / 10.0, 2); // Print total amount in dollars (with 2 decimal places)
     Serial.print(" (");
-    Serial.print(total1 / 0.10); // Display the number of coins for 10 cents
-    Serial.println(" coins)"); // Automatically adds a new line here for " coins)"
+    Serial.print(total1);
+    Serial.print(" coins)");
+    Serial.println();
     Serial.print("Overall Total: $");
-    Serial.println(totalGlobal, 2); // Automatically adds a new line here for the global total
-    updateLCD();
-    delay(500);
+    Serial.print(totalGlobal, 2); // Print overall total in dollars (with 2 decimal places)
+    Serial.println();
+    updateLCD(); // Update the LCD displays with new values
+    delay(500); 
   }
 
+  // Check if sensor 2 is triggered (1 cent)
   if (digitalRead(sensor2Pin) == HIGH) {
-    total2 += 0.01;
-    totalGlobal += 0.01;
+    total2++; // Increment the number of 1-cent coins
+    totalGlobal += 0.01; // Add 0.01 to the overall total
     Serial.print("Total 2: $");
-    Serial.print(total2, 2);
+    Serial.print(total2 / 100.0, 2); // Print total amount in dollars (with 2 decimal places)
     Serial.print(" (");
-    Serial.print(total2 / 0.01); // Display the number of coins for 1 cent
-    Serial.println(" coins)"); // Automatically adds a new line here for " coins)"
+    Serial.print(total2);
+    Serial.print(" coins)");
+    Serial.println();
     Serial.print("Overall Total: $");
-    Serial.println(totalGlobal, 2); // Automatically adds a new line here for the global total
-    updateLCD();
-    delay(500);
+    Serial.print(totalGlobal, 2); // Print overall total in dollars (with 2 decimal places)
+    Serial.println();
+    updateLCD(); // Update the LCD displays with new values
+    delay(500); 
   }
 
+  // Check if sensor 3 is triggered (5 cents)
   if (digitalRead(sensor3Pin) == HIGH) {
-    total3 += 0.05;
-    totalGlobal += 0.05;
+    total3++; // Increment the number of 5-cent coins
+    totalGlobal += 0.05; // Add 0.05 to the overall total
     Serial.print("Total 3: $");
-    Serial.print(total3, 2);
+    Serial.print(total3 / 100.0, 2); // Print total amount in dollars (with 2 decimal places)
     Serial.print(" (");
-    Serial.print(total3 / 0.05); // Display the number of coins for 5 cents
-    Serial.println(" coins)"); // Automatically adds a new line here for " coins)"
+    Serial.print(total3);
+    Serial.print(" coins)");
+    Serial.println();
     Serial.print("Overall Total: $");
-    Serial.println(totalGlobal, 2); // Automatically adds a new line here for the global total
-    updateLCD();
-    delay(500);
+    Serial.print(totalGlobal, 2); // Print overall total in dollars (with 2 decimal places)
+    Serial.println();
+    updateLCD(); // Update the LCD displays with new values
+    delay(500); 
   }
 
+  // Check if sensor 4 is triggered (25 cents)
   if (digitalRead(sensor4Pin) == HIGH) {
-    total4 += 0.25;
-    totalGlobal += 0.25;
+    total4++; // Increment the number of 25-cent coins
+    totalGlobal += 0.25; // Add 0.25 to the overall total
     Serial.print("Total 4: $");
-    Serial.print(total4, 2);
+    Serial.print(total4 / 100.0, 2); // Print total amount in dollars (with 2 decimal places)
     Serial.print(" (");
-    Serial.print(total4 / 0.25); // Display the number of coins for 25 cents
-    Serial.println(" coins)"); // Automatically adds a new line here for " coins)"
+    Serial.print(total4);
+    Serial.print(" coins)");
+    Serial.println();
     Serial.print("Overall Total: $");
-    Serial.println(totalGlobal, 2); // Automatically adds a new line here for the global total
-    updateLCD();
-    delay(500);
+    Serial.print(totalGlobal, 2); // Print overall total in dollars (with 2 decimal places)
+    Serial.println();
+    updateLCD(); // Update the LCD displays with new values
+    delay(500); 
   }
 
+  // Check if sensor 5 is triggered (1 dollar)
   if (digitalRead(sensor5Pin) == HIGH) {
-    total5 += 1.0;
-    totalGlobal += 1.0;
+    total5++; // Increment the number of 1-dollar coins
+    totalGlobal += 1.0; // Add 1.0 to the overall total
     Serial.print("Total 5: $");
-    Serial.print(total5, 2);
+    Serial.print(total5); // Print total amount in dollars (integer value for 1-dollar coins)
     Serial.print(" (");
-    Serial.print(total5); // Display the number of coins for 1 dollar
-    Serial.println(" coins)"); // Automatically adds a new line here for " coins)"
+    Serial.print(total5);
+    Serial.print(" coins)");
+    Serial.println();
     Serial.print("Overall Total: $");
-    Serial.println(totalGlobal, 2); // Automatically adds a new line here for the global total
-    updateLCD();
-    delay(500);
+    Serial.print(totalGlobal, 2); // Print overall total in dollars (with 2 decimal places)
+    Serial.println();
+    updateLCD(); // Update the LCD displays with new values
+    delay(500); 
   }
 }
+
 
 void updateLCD() {
   lcd1.clear(); // Clear the first I2C LCD screen
   lcd1.setCursor(0, 0); // Set the cursor to column 0, row 0
   lcd1.print("1c(");
-  lcd1.print(total2 / 0.01); // Display the number of 1 cent coins
-  lcd1.print(") 5c(");
-  lcd1.print(total3 / 0.05); // Display the number of 5 cents coins
+  lcd1.print(total2);
+  lcd1.print(")  5c(");
+  lcd1.print(total3);
   lcd1.print(")");
 
   lcd1.setCursor(0, 1); // Set the cursor to column 0, row 1
   lcd1.print("$");
-  lcd1.print(total2, 2); // Display the total value in dollars for 1 cent coins with 2 decimal places
+  lcd1.print(total2 * 0.01, 2);
   lcd1.print("  $");
-  lcd1.print(total3, 2); // Display the total value in dollars for 5 cents coins with 2 decimal places
+  lcd1.print(total3 * 0.05, 2);
   
   lcd2.clear(); // Clear the second I2C LCD screen
   lcd2.setCursor(0, 0); // Set the cursor to column 0, row 0
   lcd2.print("10c(");
-  lcd2.print(total1 / 0.10); // Display the number of 10 cents coins
+  lcd2.print(total1);
   lcd2.print(") 25c(");
-  lcd2.print(total4 / 0.25); // Display the number of 25 cents coins
+  lcd2.print(total4);
   lcd2.print(")");
 
   lcd2.setCursor(0, 1); // Set the cursor to column 0, row 1
   lcd2.print("$");
-  lcd2.print(total1, 2); // Display the total value in dollars for 10 cents coins with 2 decimal places
+  lcd2.print(total1 * 0.10, 2);
   lcd2.print("  $");
-  lcd2.print(total4, 2); // Display the total value in dollars for 25 cents coins with 2 decimal places
+  lcd2.print(total4 * 0.25, 2);
   
   lcd3.clear(); // Clear the third I2C LCD screen
   lcd3.setCursor(0, 0); // Set the cursor to column 0, row 0
   lcd3.print("$1(");
-  lcd3.print(total5); // Display the number of 1 dollar coins
+  lcd3.print(total5);
   lcd3.print(")  Total");
 
   lcd3.setCursor(0, 1); // Set the cursor to column 0, row 1
   lcd3.print("$");
-  lcd3.print(total5, 2); // Display the total value in dollars for 1 dollar coins with 2 decimal places
+  lcd3.print(total5 * 1.0, 2);
   lcd3.print("  $");
-  lcd3.print(totalGlobal, 2); // Display the global total with 2 decimal places
+  lcd3.print(totalGlobal, 2);
 }
-
-
-
 
     </code>
   </pre>
