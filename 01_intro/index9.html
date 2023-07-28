@@ -65,7 +65,6 @@ And here is a <a href="https://nathanmelenbrink.github.io/intro-dig-fab/09_netwo
 </ul>
 <p>Even though we chose the radio option, we still tried the tutorial to get a simple wifi server to turn a led on and off (or a piezzo buzzer in our case).
 Then, Loni modified the basic code on the ESP Now radio site so that the piezzo buzzer lights up when the receiving board receives even numbers.</p>
-<h2> verif avec Loni plus emander le code</h2>
 <p>Then I added a button linked to the emitting board. I used a XIAO for this and even the simple test of having a button to turn on an LED took a long time. I could make a code like the one on arduino "blink". However, as soon as I added a button it didn't work. The XIAO then stopped working. It was really frustrating. I finally got it to work with an ESP32C3 board.</p>
 <p>I modified the code so that the emitting board sends 0 or 1 to the receiving board depending on whether the button is pressed or not. Depending on whether the receiving board receives 0 or 1, the piezzo buzzer lights up or not.</p>
 <p>This is the code for the emitting board.</p>
