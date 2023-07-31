@@ -561,11 +561,11 @@ void loop() {
 
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2); // LCD Screen
 
-const int sensor1Pin = A0; // Sensor 1, A4 pin
-const int sensor2Pin = A1; // Sensor 2, A2 pin
-const int sensor3Pin = A2; // Sensor 3, A0 pin
+const int sensor1Pin = A0; // Sensor 1, A0 pin
+const int sensor2Pin = A1; // Sensor 2, A1 pin
+const int sensor3Pin = A2; // Sensor 3, A2 pin
 const int sensor4Pin = A3; // Sensor 4, A3 pin
-const int sensor5Pin = 9; // Sensor 5, A5 pin
+const int sensor5Pin = 9; // Sensor 5, 9 pin
 
 int total1 = 0; // Total for Sensor 1 (10 cents)
 int total2 = 0; // Total for Sensor 2 (1 cent)
@@ -1027,41 +1027,25 @@ void updateLCD() {
   lcd1.setCursor(5, 0);
   lcd1.print("Total:");
 
-  lcd1.setCursor(4, 1);
+  lcd1.setCursor(4, 1); // Set the cursor position to column 4, row 1
   lcd1.print("$");
-  int cents = totalGlobal * 100;
-  lcd1.print(cents / 100);
-  lcd1.print(".");
-  if ((cents % 100) < 10) {
-    lcd1.print("0");
-  }
-  lcd1.print(cents % 100);
+  lcd1.print(totalGlobal, 2); // Display the global total with 2 decimal places
 
   lcd2.clear();
   lcd2.setCursor(5, 0);
   lcd2.print("Total:");
 
-  lcd2.setCursor(4, 1);
-  lcd2.print("$");
-  lcd2.print(cents / 100);
-  lcd2.print(".");
-  if ((cents % 100) < 10) {
-    lcd2.print("0");
-  }
-  lcd2.print(cents % 100);
+ lcd2.setCursor(4, 1); // Set the cursor position to column 4, row 1
+lcd2.print("$");
+lcd2.print(totalGlobal, 2); // Display the global total with 2 decimal places
 
   lcd3.clear();
   lcd3.setCursor(5, 0);
   lcd3.print("Total:");
 
-  lcd3.setCursor(4, 1);
+ lcd3.setCursor(4, 1); // Set the cursor position to column 4, row 1
   lcd3.print("$");
-  lcd3.print(cents / 100);
-  lcd3.print(".");
-  if ((cents % 100) < 10) {
-    lcd3.print("0");
-  }
-  lcd3.print(cents % 100);
+  lcd3.print(totalGlobal, 2); // Display the global total with 2 decimal places
 }
 
 
