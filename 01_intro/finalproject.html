@@ -715,16 +715,16 @@ void loop() {
 <h3>Important code</h3>
  <pre>
   <code class="language-arduino">
-
+#include "Wire.h"
 #include "LiquidCrystal_I2C.h"
 
 LiquidCrystal_I2C lcd(0x27, 16, 2); // Initialize the I2C LCD display with address 0x27, 16 columns, and 2 rows
 
-const int sensor1Pin = A0; // Sensor 1, A4 pin
-const int sensor2Pin = A1; // Sensor 2, A2 pin
-const int sensor3Pin = A2; // Sensor 3, A0 pin
+const int sensor1Pin = A0; // Sensor 1, A0 pin
+const int sensor2Pin = A1; // Sensor 2, A1 pin
+const int sensor3Pin = A2; // Sensor 3, A2 pin
 const int sensor4Pin = A3; // Sensor 4, A3 pin
-const int sensor5Pin = 9; // Sensor 5, A5 pin
+const int sensor5Pin = 9; // Sensor 5, 9 pin
 
 int total1 = 0; // Total for Sensor 1 (10 cents)
 int total2 = 0; // Total for Sensor 2 (1 cent)
@@ -823,19 +823,13 @@ void loop() {
 }
 
 void updateLCD() {
-  lcd.clear(); // Clear the I2C LCD screen
-  lcd.setCursor(5, 0); // Set the cursor to column 5, line 0
+  lcd.clear(); // Clear the LCD screen
+  lcd.setCursor(5, 0); // Set the cursor position to column 5, row 0
   lcd.print("Total:");
 
-  lcd.setCursor(4, 1); // Set the cursor to column 4, line 1
+  lcd.setCursor(4, 1); // Set the cursor position to column 4, row 1
   lcd.print("$");
-  int cents = (int)(totalGlobal * 100); // Convert the total to cents as an integer
-  lcd.print(cents / 100); // Display the dollar part of the total
-  lcd.print(".");
-  if ((cents % 100) < 10) {
-    lcd.print("0");
-  }
-  lcd.print(cents % 100); // Display the cents part of the total
+  lcd.print(totalGlobal, 2); // Display the global total with 2 decimal places
 }
     </code>
   </pre>
