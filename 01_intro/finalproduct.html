@@ -47,7 +47,260 @@
 
 #### Final product
 
+<p>For my final project, I decided to create a smart piggy bank.</p>
+<p> Here is a video demo.</p>
+<video width="1080" height="810" controls>
+      <source src="Demo3.mp4" type=video/mp4>
+    </video>
 
+<p> I chose this project because I really wanted to finally use my coins that I never use because I am too lazy to sort and count them. </p>
+
+<p>Here is the code I used. </p>
+<pre>
+  <code class="language-arduino">
+#include "Wire.h"
+#include "LiquidCrystal_I2C.h"
+
+const int sensor1Pin = A0; // Sensor 1, connected to A0 pin (10 cents)
+const int sensor2Pin = A1; // Sensor 2, connected to A1 pin (1 cent)
+const int sensor3Pin = A2; // Sensor 3, connected to A2 pin (5 cents)
+const int sensor4Pin = A3; // Sensor 4, connected to A3 pin (25 cents)
+const int sensor5Pin = 9;  // Sensor 5, connected to digital pin 9 (1 dollar)
+const int sensor6Pin = 3;  // Sensor 6, connected to digital pin 3 (for reset)
+
+LiquidCrystal_I2C lcd1(0x27, 16, 2);  // First I2C LCD screen (1 cent and 5 cents)
+LiquidCrystal_I2C lcd2(0x23, 16, 2);  // Second I2C LCD screen (10 cents and 25 cents)
+LiquidCrystal_I2C lcd3(0x26, 16, 2);  // Third I2C LCD screen (1 dollar)
+
+class CoinSensor {
+private:
+  int pin;
+  int coinValue;
+  int totalCoins;
+  unsigned long lastDebounceTime;
+  const unsigned long debounceDelay = 500;
+
+public:
+  CoinSensor(int sensorPin, int value) : pin(sensorPin), coinValue(value), totalCoins(0), lastDebounceTime(0) {}
+
+  void init() {
+    pinMode(pin, INPUT);
+  }
+
+  void update() {
+    unsigned long currentTime = millis();
+    if (digitalRead(pin) == HIGH && (currentTime - lastDebounceTime) >= debounceDelay) {
+      totalCoins++;
+      lastDebounceTime = currentTime;
+    }
+  }
+
+  int getTotalCoins() const {
+    return totalCoins;
+  }
+
+  int getCoinValue() const {
+    return coinValue;
+  }
+
+  void resetTotalCoins() {
+    totalCoins = 0;
+  }
+};
+
+CoinSensor sensors[] = {
+  CoinSensor(sensor2Pin, 1), // 1 cent
+  CoinSensor(sensor3Pin, 5), // 5 cents
+  CoinSensor(sensor1Pin, 10), // 10 cents
+  CoinSensor(sensor4Pin, 25), // 25 cents
+  CoinSensor(sensor5Pin, 100), // 1 dollar
+  CoinSensor(sensor6Pin, 0)  // New sensor for reset (initial value 0, it can be updated based on its actual value)
+};
+
+// Variables to store previous values for LCD update
+int prevSensor1Coins = 0;
+int prevSensor2Coins = 0;
+int prevSensor3Coins = 0;
+int prevSensor4Coins = 0;
+int prevSensor5Coins = 0;
+int prevSensor6Coins = 0; // New variable for the additional sensor
+float prevTotalGlobal = 0.0;
+
+void setup() {
+  lcd1.init();
+  lcd1.backlight();
+  lcd1.clear();
+  lcd1.setCursor(0, 0);
+  lcd1.print("1c(0) 5c(0)");
+  lcd1.setCursor(0, 1);
+  lcd1.print("$0.00  $0.00");
+
+  lcd2.init();
+  lcd2.backlight();
+  lcd2.clear();
+  lcd2.setCursor(0, 0);
+  lcd2.print("10c(0) 25c(0)");
+  lcd2.setCursor(0, 1);
+  lcd2.print("$0.00  $0.00");
+
+  lcd3.init();
+  lcd3.backlight();
+  lcd3.clear();
+  lcd3.setCursor(0, 0);
+  lcd3.print("$1(0)  Total");
+  lcd3.setCursor(0, 1);
+  lcd3.print("$0.00  $0.00");
+
+  Serial.begin(9600);
+}
+
+void loop() {
+  for (int i = 0; i < 5; i++) {
+    sensors[i].update();
+  }
+  sensors[5].update(); // Update the reset sensor
+
+  updateLCD(); // Update the LCD screens
+}
+
+void updateLCD() {
+  // Check if the content has changed before updating
+  if (prevSensor2Coins != sensors[0].getTotalCoins() || prevSensor3Coins != sensors[1].getTotalCoins()) {
+    lcd1.clear();
+    lcd1.setCursor(0, 0);
+    lcd1.print("1c(");
+    lcd1.print(sensors[0].getTotalCoins());
+    lcd1.print(") 5c(");
+    lcd1.print(sensors[1].getTotalCoins());
+    lcd1.print(")");
+
+    lcd1.setCursor(0, 1);
+    lcd1.print("$");
+    lcd1.print(sensors[0].getTotalCoins() * 0.01, 2);
+    lcd1.print("  $");
+    lcd1.print(sensors[1].getTotalCoins() * 0.05, 2);
+
+    // Update previous values
+    prevSensor2Coins = sensors[0].getTotalCoins();
+    prevSensor3Coins = sensors[1].getTotalCoins();
+  }
+
+  if (prevSensor1Coins != sensors[2].getTotalCoins() || prevSensor4Coins != sensors[3].getTotalCoins()) {
+    lcd2.clear();
+    lcd2.setCursor(0, 0);
+    lcd2.print("10c(");
+    lcd2.print(sensors[2].getTotalCoins());
+    lcd2.print(") 25c(");
+    lcd2.print(sensors[3].getTotalCoins());
+    lcd2.print(")");
+
+    lcd2.setCursor(0, 1);
+    lcd2.print("$");
+    lcd2.print(sensors[2].getTotalCoins() * 0.10, 2);
+    lcd2.print("  $");
+    lcd2.print(sensors[3].getTotalCoins() * 0.25, 2);
+
+    // Update previous values
+    prevSensor1Coins = sensors[2].getTotalCoins();
+    prevSensor4Coins = sensors[3].getTotalCoins();
+  }
+
+  if (prevSensor5Coins != sensors[4].getTotalCoins() || prevTotalGlobal != getTotalGlobal()) {
+    lcd3.clear();
+    lcd3.setCursor(0, 0);
+    lcd3.print("$1(");
+    lcd3.print(sensors[4].getTotalCoins());
+    lcd3.print(")  Total");
+
+    lcd3.setCursor(0, 1);
+    lcd3.print("$");
+    lcd3.print(sensors[4].getTotalCoins() * 1.0, 2);
+    lcd3.print("  $");
+    lcd3.print(getTotalGlobal(), 2);
+
+    // Update previous values
+    prevSensor5Coins = sensors[4].getTotalCoins();
+    prevTotalGlobal = getTotalGlobal();
+  }
+
+  // Check if the reset sensor (sensor6) is active
+  if (sensors[5].getTotalCoins() > 0) {
+    // Reset the total global
+    prevTotalGlobal = 0;
+
+    // Reset the previous values for all sensors
+    prevSensor1Coins = 0;
+    prevSensor2Coins = 0;
+    prevSensor3Coins = 0;
+    prevSensor4Coins = 0;
+    prevSensor5Coins = 0;
+
+    // Reset the total coins for all sensors
+    for (int i = 0; i < 5; i++) {
+      sensors[i].resetTotalCoins();
+    }
+
+    // Reset the reset sensor
+    sensors[5].resetTotalCoins();
+
+    // Clear and update the LCD screens to display zeros
+    lcd1.clear();
+    lcd1.setCursor(0, 0);
+    lcd1.print("1c(0) 5c(0)");
+    lcd1.setCursor(0, 1);
+    lcd1.print("$0.00  $0.00");
+
+    lcd2.clear();
+    lcd2.setCursor(0, 0);
+    lcd2.print("10c(0) 25c(0)");
+    lcd2.setCursor(0, 1);
+    lcd2.print("$0.00  $0.00");
+
+    lcd3.clear();
+    lcd3.setCursor(0, 0);
+    lcd3.print("$1(0)  Total");
+    lcd3.setCursor(0, 1);
+    lcd3.print("$0.00  $0.00");
+  }
+
+  // Update the reset sensor debounce
+  sensors[5].update();
+}
+
+float getTotalGlobal() {
+  float total = 0.0;
+  total += sensors[0].getTotalCoins() * 0.01;
+  total += sensors[1].getTotalCoins() * 0.05;
+  total += sensors[2].getTotalCoins() * 0.10;
+  total += sensors[3].getTotalCoins() * 0.25;
+  total += sensors[4].getTotalCoins() * 1.0;
+  return total;
+}
+
+void resetTotals() {
+  // Reset the total global
+  prevTotalGlobal = 0;
+
+  // Reset the previous values for all sensors
+  prevSensor1Coins = 0;
+  prevSensor2Coins = 0;
+  prevSensor3Coins = 0;
+  prevSensor4Coins = 0;
+  prevSensor5Coins = 0;
+  prevSensor6Coins = 0; // Reset the additional sensor too
+
+  // Reset the total coins for all sensors
+  for (int i = 0; i < 5; i++) {
+    sensors[i].resetTotalCoins();
+  }
+}
+
+
+
+  </code>
+</pre>
+
+<p> To see my process in details, please go to the other page dedicated to my final project. </p>
 
 </xmp>
 </body>
